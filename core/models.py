@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinValueValidator, MaxValueValidator
-from .constants import ROLE_CHOICES, GENDER_CHOICES, LAB_TEST_CHOICES, PROCEDURE_CHOICES, FEMALE_SPECIFIC_FIELDS, BLOOD_GROUP_CHOICES, RH_FACTOR_CHOICES
+from .constants import ROLE_CHOICES, GENDER_CHOICES, LAB_TEST_CHOICES, PROCEDURE_CHOICES, MARITAL_STATUSES, BLOOD_GROUP_CHOICES, RH_FACTOR_CHOICES
 from django.db import models
 from django.utils import timezone
 import random
@@ -70,6 +70,7 @@ class PatientProfile(models.Model):
     full_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES)
+    marital_status = models.CharField(max_length=20, choices=MARITAL_STATUSES)
     phone_number = models.CharField(max_length=15)
     contact_email = models.EmailField()
     next_of_kin_name = models.CharField(max_length=100)
@@ -123,6 +124,8 @@ class MedicalInfo(models.Model):
         blank=True,
         help_text="Describe past surgeries (type, date, outcome)"
     )
+    current_medications = models.TextField(blank=True)
+
 
     def __str__(self):
         return f"Medical Info for {self.user.username}"

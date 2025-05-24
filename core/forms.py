@@ -3,7 +3,7 @@ from .models import User, PatientProfile, MedicalInfo, MedicalExam
 import re
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
-from .constants import FEMALE_SPECIFIC_FIELDS, LAB_TEST_CHOICES, PROCEDURE_CHOICES
+from .constants import LAB_TEST_CHOICES, PROCEDURE_CHOICES
 from django.forms import widgets
 from django.forms import fields as form_fields
 from django.forms import widgets as form_widgets
@@ -59,7 +59,7 @@ class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
         fields = [
-            'full_name', 'date_of_birth', 'gender', 
+            'full_name', 'date_of_birth', 'gender', 'marital_status',
             'phone_number', 'contact_email', 
             'next_of_kin_name', 'next_of_kin_phone', 'next_of_kin_email'
         ]
@@ -75,7 +75,8 @@ class MedicalInfoForm(forms.ModelForm):
             'allergies',
             'chronic_conditions',
             'medical_history',
-            'past_surgeries'
+            'past_surgeries',
+            'current_medications',
         ]
 
 class MedicalForm(forms.ModelForm):

@@ -1,5 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
 <div class="auth-container">
     <div class="auth-card">
         <!-- Header with logo -->
@@ -67,24 +69,7 @@
         --bg-dark: #111827;
         --bg-darker: #0a0f1a;
     }
-    
-    .auth-container {
-        position: relative;
-        padding: 2rem;
-    }
-    .auth-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: var(--bg-dark);
-          background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
-        background-size: 50px 50px;
-        background-repeat: repeat;
-        z-index: -1;
-    }
+
     /* Auth card */
     .auth-card {
         background-color: var(--secondary);
@@ -288,4 +273,4 @@
         animation: fadeIn 0.6s ease-out;
     }
 </style>
-</html>
+{% endblock %}

@@ -10,36 +10,12 @@ GENDER_CHOICES = [
     ('non-binary', 'non-binary'),
 ]
 
-FEMALE_SPECIFIC_FIELDS = {
-    'is_pregnant': {
-        'field_type': 'BooleanField',
-        'label': 'Is the patient pregnant?',
-        'required': False,
-        'widget': 'CheckboxInput',
-        'widget_attrs': {'class': 'form-check-input'}
-    },
-    'pregnancy_weeks': {
-        'field_type': 'IntegerField',
-        'label': 'Weeks of pregnancy',
-        'required': False,
-        'widget': 'NumberInput',
-        'widget_attrs': {'class': 'form-control'}
-    },
-    'last_menstrual_period': {
-        'field_type': 'DateField',
-        'label': 'Last menstrual period',
-        'required': False,
-        'widget': 'DateInput',
-        'widget_attrs': {'type': 'date', 'class': 'form-control'}
-    },
-    'menstrual_cycle_notes': {
-        'field_type': 'CharField',
-        'label': 'Menstrual cycle notes',
-        'required': False,
-        'widget': 'Textarea',
-        'widget_attrs': {'class': 'form-control', 'rows': 3}
-    }
-}
+MARITAL_STATUSES = [
+    ('single', 'Single'),
+    ('married', 'Married'),
+    ('divorced', 'Divorced'),
+    ('widowed', 'Widowed'),
+]
 
 BLOOD_GROUP_CHOICES = [
     ('A', 'A'),
