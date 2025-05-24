@@ -31,7 +31,7 @@ MEDIC_SECRET_CODE = os.getenv("MEDIC_SECRET_CODE")
 SECRET_KEY = 'django-insecure-ujjz!m7_9=-bo-$p@-%4zw_e1=hijqcld3-jt!x)!=502%m%$i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['imanii.onrender.com', '127.0.0.1', 'localhost']
 AUTH_USER_MODEL = 'core.User'
@@ -82,8 +82,10 @@ WSGI_APPLICATION = 'carevault.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+DATABASE_URL = os.getenv('DATABASE_URL')
+
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
 # Password validation
