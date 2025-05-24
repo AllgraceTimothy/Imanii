@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Medical Info for {{ patient.username }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        :root {
+            --primary: #3b82f6;
+            --primary-light: rgba(59, 130, 246, 0.1);
+            --primary-dark: #2563eb;
+            --secondary: #1f2937;
+            --dark: #111827;
+            --light: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --gray: #6b7280;
+            --gray-light: #374151;
+            --danger: #ef4444;
+            --success: #10b981;
+            --bg-dark: #111827;
+            --bg-darker: #0a0f1a;
+            --card-bg: #1f2937;
+            --card-border: rgba(255, 255, 255, 0.05);
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
+            background-size: 50px 50px;
+            background-repeat: repeat;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .update-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .update-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .back-btn {
+            background-color: var(--gray-light);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            background-color: var(--gray);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .update-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .update-icon {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .update-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+        
+        .update-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            border: 1px solid var(--card-border);
+        }
+        
+        .update-form {
+            margin-top: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9375rem;
+        }
+        
+        .input-container {
+            width: 100%;
+        }
+
+        .update-form input,
+        .update-form select,
+        .update-form textarea {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 1px solid rgba(55, 65, 81, 0.6);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.25s ease;
+            background-color: rgba(10, 15, 26, 0.8);
+            color: var(--text-primary);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .update-form textarea {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.0;
+            padding: 1.25rem;
+        }
+
+        .update-form input:focus,
+        .update-form select:focus,
+        .update-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3),
+                        inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            background-color: rgba(10, 15, 26, 0.9);
+        }
+
+        /* Placeholder styling */
+        .update-form input::placeholder,
+        .update-form textarea::placeholder {
+            color: var(--gray);
+            opacity: 0.7;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .save-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .save-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .save-btn svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s ease;
+        }
+        
+        .save-btn:hover svg {
+            transform: translateX(3px);
+        }
+        
+        /* Error styling */
+        .errorlist {
+            list-style: none;
+            color: var(--danger);
+            font-size: 0.8125rem;
+            margin-top: 0.25rem;
+        }
+        
+        .field-error {
+            border-color: var(--danger) !important;
+        }
+        
+        /* Checkbox styling */
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .update-card {
+                padding: 1.5rem;
+            }
+            
+            .update-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .form-actions {
+                flex-direction: column-reverse;
+                gap: 1rem;
+            }
+            
+            .save-btn {
+                width: 100%;
+            }
+            
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .update-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="update-container">
+        <div class="update-header">
+            <div class="update-title">
+                <div class="update-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </div>
+                <h2>Update Medical Info for {{ patient.username }}</h2>
+            </div>
+            
+            <div class="header-actions">
+                <a href="{% url 'view_patient' patient.id %}" class="back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Patient
+                </a>
+            </div>
+        </div>
+        
+        <div class="update-card">
+            <form method="post" class="update-form">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    <div class="input-container">
+                        {% if field.field.widget.input_type == 'checkbox' %}
+                            <div class="form-checkbox">
+                                {{ field }}
+                                <span>{{ field.label }}</span>
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    </div>
+                    {% if field.help_text %}
+                        <small class="form-help">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <div class="form-actions">
+                    <a href="{% url 'view_patient' patient.id %}" class="back-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Cancel
+                    </a>
+                    <button type="submit" class="save-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Add error class to fields with errors
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorFields = document.querySelectorAll('.errorlist');
+            errorFields.forEach(function(errorList) {
+                const inputId = errorList.previousElementSibling.querySelector('input, select, textarea')?.id;
+                if (inputId) {
+                    const input = document.getElementById(inputId);
+                    if (input) {
+                        input.classList.add('field-error');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

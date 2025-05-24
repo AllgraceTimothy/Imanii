@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block description %}{% endblock %}">
+  <title>Imani {% block title %}{% endblock %}</title>
+  
+  <!-- Preconnect to external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <!-- External CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    * {
+
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    :root {
+        --primary: #3b82f6;
+        --primary-light: rgba(59, 130, 246, 0.1);
+        --primary-dark: #2563eb;
+        --secondary: #1f2937;
+        --dark: #111827;
+        --light: #1f2937;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --gray: #6b7280;
+        --gray-light: #374151;
+        --danger: #ef4444;
+        --bg-dark: #111827;
+        --bg-darker: #0a0f1a;
+        --card-bg: #1f2937;
+        --card-border: rgba(255, 255, 255, 0.05);
+    }
+    
+    body {
+      background-color: var(--bg-dark);
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
+      background-size: 50px 50px;
+      background-repeat: repeat;
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+  </style>
+  
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-primary text-white min-h-screen flex flex-col">
+  <header class="bg-secondary p-4 shadow-lg">
+    <div class="container flex justify-between items-center">
+      {% block header_content %}
+        <!-- Default header content goes here -->
+      {% endblock %}
+    </div>
+  </header>
+
+  {% if messages %}
+  <div id="flash-messages" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full px-4">
+    {% for message in messages %}
+      <div class="bg-gray-800 border-l-4 p-4 mb-2 rounded shadow 
+                  {% if message.tags == 'success' %}border-green-400 text-green-300
+                  {% elif message.tags == 'error' or message.tags == 'danger' %}border-red-400 text-red-300
+                  {% elif message.tags == 'warning' %}border-yellow-400 text-yellow-300
+                  {% else %}border-blue-400 text-blue-300{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main class="flex-grow p-6 container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="bg-secondary p-4 mt-auto">
+    <div class="container">
+      {% block footer_content %}
+        <!-- Default footer content goes here -->
+      {% endblock %}
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+  
+  <script>
+    // Auto-dismiss flash messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+      const flashMessages = document.getElementById('flash-messages');
+      if (flashMessages) {
+        setTimeout(() => {
+          flashMessages.remove();
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>
