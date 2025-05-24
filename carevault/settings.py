@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-ujjz!m7_9=-bo-$p@-%4zw_e1=hijqcld3-jt!x)!=502%m%$i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['imanii.onrender.com', '127.0.0.1', 'localhost']
 AUTH_USER_MODEL = 'core.User'
 
 # Application definition
