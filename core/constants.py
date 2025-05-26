@@ -1,3 +1,4 @@
+# Predefined choices for model attributes
 ROLE_CHOICES = [
     ('patient', 'Patient'),
     ('medic', 'Medic'),

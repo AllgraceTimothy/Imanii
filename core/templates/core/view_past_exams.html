@@ -1,343 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Reviews</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        
-        :root {
-            --primary: #3b82f6;
-            --primary-light: rgba(59, 130, 246, 0.1);
-            --primary-dark: #2563eb;
-            --secondary: #1f2937;
-            --dark: #111827;
-            --light: #1f2937;
-            --text-primary: #f9fafb;
-            --text-secondary: #d1d5db;
-            --gray: #6b7280;
-            --gray-light: #374151;
-            --danger: #ef4444;
-            --success: #10b981;
-            --bg-dark: #111827;
-            --bg-darker: #0a0f1a;
-            --card-bg: #1f2937;
-            --card-border: rgba(255, 255, 255, 0.05);
-        }
-        
-        body {
-            background-color: var(--bg-dark);
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
-            background-size: 50px 50px;
-            background-repeat: repeat;
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 2rem;
-        }
-        
-        .reviews-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .reviews-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .back-btn {
-            background-color: var(--gray-light);
-            color: var(--text-primary);
-            border: none;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-        
-        .back-btn:hover {
-            background-color: var(--gray);
-            transform: translateY(-2px);
-        }
-        
-        .back-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-        
-        .reviews-title {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .reviews-icon {
-            width: 48px;
-            height: 48px;
-            background-color: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-        
-        .reviews-icon svg {
-            width: 24px;
-            height: 24px;
-            color: var(--primary);
-        }
-        
-        .reviews-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
-            border: 1px solid var(--card-border);
-            margin-bottom: 2rem;
-        }
-        
-        .exams-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-        
-        .exam-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .exam-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-        
-        .exam-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background-color: var(--primary);
-        }
-        
-        .exam-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-        
-        .exam-date {
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .exam-date svg {
-            width: 16px;
-            height: 16px;
-        }
-        
-        .exam-medic {
-            color: var(--success);
-            font-weight: 500;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .exam-medic svg {
-            width: 16px;
-            height: 16px;
-        }
-        
-        .exam-type {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-        
-        .exam-notes {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .exam-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            width: 100%;
-        }
-        
-        .exam-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        
-        .exam-btn svg {
-            width: 16px;
-            height: 16px;
-            margin-left: 0.5rem;
-        }
-        
-        .no-reviews {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-        }
-        
-        .section-title {
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .reviews-card {
-                padding: 1.5rem;
-            }
-            
-            .reviews-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .back-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .exams-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .reviews-card {
-            animation: fadeIn 0.6s ease-out;
-        }
-        
-        .exam-card {
-            animation: fadeIn 0.4s ease-out;
-            animation-fill-mode: both;
-        }
-        
-        /* Staggered animation for cards */
-        .exam-card:nth-child(1) { animation-delay: 0.1s; }
-        .exam-card:nth-child(2) { animation-delay: 0.2s; }
-        .exam-card:nth-child(3) { animation-delay: 0.3s; }
-        .exam-card:nth-child(4) { animation-delay: 0.4s; }
-        .exam-card:nth-child(5) { animation-delay: 0.5s; }
-        .exam-card:nth-child(6) { animation-delay: 0.6s; }
-    </style>
-</head>
-<body>
-    <div class="reviews-container">
-        <div class="reviews-header">
-            <div class="reviews-title">
-                <div class="reviews-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                </div>
-                <h2>Past Medical Exams</h2>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Past Examinations{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    <!-- Glow effects -->
+    <div class="glow glow-primary"></div>
+    <div class="glow glow-accent"></div>
+    
+    <div class="dashboard-header">
+        <div class="reviews-title">
+            <div class="reviews-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
             </div>
-            
-            <div class="header-actions">
-                <a href="{% url 'patient_dashboard' %}" class="back-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to Dashboard
-                </a>
+            <div class="welcome-text">
+                <h2>Past Medical Exams</h2>
+                <p>Patient Code: {{ request.user.imanis_code }}</p>
             </div>
         </div>
         
+        <div class="header-actions">
+            <a href="{% url 'patient_dashboard' %}" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
         <div class="reviews-card">
             {% if past_exams %}
                 <h3 class="section-title">Your Treatment History</h3>
                 <div class="exams-grid">
+                    <!-- Past Exam Card -->
                     {% for exam in past_exams %}
                     <div class="exam-card">
                         <div class="exam-header">
                             <div class="exam-date">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                                 {{ exam.date }}
                             </div>
                         </div>
                         <div class="exam-medic">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
-                            Dr. {{ exam.medic.username }}
+                            Dr. {{ exam.medic.last_name }}
                         </div>
                         <h4 class="exam-type">Doctor's General Comments</h4>
                         <p class="exam-notes">
@@ -349,22 +62,417 @@
                         </p>
                         <a href="{% url 'view_medical_exam' exam.id %}" class="exam-btn">
                             View Full Details
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
                     </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="no-reviews">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="48" height="48" style="margin-bottom: 1rem; color: var(--gray);">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p>No medical exams found in your records.</p>
                 </div>
             {% endif %}
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<style>
+    :root {
+        --primary: #8b5cf6;
+        --primary-light: rgba(139, 92, 246, 0.1);
+        --primary-dark: #7c3aed;
+        --accent: #ec4899;
+        --danger: #ef4444;
+        --success: #10b981;
+        --secondary: #1e293b;
+        --bg-darker: #0f172a;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --transition: all 0.3s ease;
+    }
+    
+    /* Glow effects */
+    .glow {
+        position: fixed;
+        width: 300px;ly
+        height: 300px;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+        z-index: 1;
+    }
+    
+    .glow-primary {
+        background: var(--primary);
+        top: 20%;
+        left: 10%;
+    }
+    
+    .glow-accent {
+        background: var(--accent);
+        bottom: 30%;
+        right: 15%;
+    }
+
+    /* Dashboard Container */
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Header */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .reviews-title {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .reviews-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .reviews-icon svg {
+        width: 28px;
+        height: 28px;
+        color: var(--primary);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .welcome-text h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .welcome-text p {
+        color: var(--text-secondary);
+        font-size: 0.9375rem;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .back-btn {
+        background-color: var(--secondary);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        text-decoration: none;
+    }
+
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transform: translateY(-2px);
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .back-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Reviews Card */
+    .reviews-card {
+        background-color: var(--secondary);
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        padding: 2rem;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    /* Exams Grid */
+    .exams-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Exam Card */
+    .exam-card {
+        background-color: var(--bg-darker);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 1.5rem;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.4s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .exam-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--primary), var(--accent));
+    }
+
+    .exam-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    /* Staggered animation for cards */
+    .exam-card:nth-child(1) { animation-delay: 0.1s; }
+    .exam-card:nth-child(2) { animation-delay: 0.2s; }
+    .exam-card:nth-child(3) { animation-delay: 0.3s; }
+    .exam-card:nth-child(4) { animation-delay: 0.4s; }
+    .exam-card:nth-child(5) { animation-delay: 0.5s; }
+    .exam-card:nth-child(6) { animation-delay: 0.6s; }
+
+    /* Exam Header */
+    .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    /* Exam Date */
+    .exam-date {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .exam-date svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Exam Medic */
+    .exam-medic {
+        color: var(--success);
+        font-weight: 500;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .exam-medic svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Exam Type */
+    .exam-type {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+
+    /* Exam Notes */
+    .exam-notes {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Exam Button */
+    .exam-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        width: 100%;
+    }
+
+    .exam-btn:hover {
+        background: linear-gradient(to right, var(--primary-dark), #db2777);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    }
+
+    .exam-btn svg {
+        width: 16px;
+        height: 16px;
+        margin-left: 0.5rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+        background-color: var(--bg-darker);
+        border-radius: 10px;
+        border: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .empty-state svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        opacity: 0.5;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        display: block; /* Add this */
+        margin-left: auto; /* Add these two */
+        margin-right: auto; /* to ensure SVG is centered */
+    }
+
+    .empty-state p {
+        width: 100%; /* Ensure text takes full width */
+        margin: 0 auto; /* Center the paragraph */
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1.5rem;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .back-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .reviews-card {
+            padding: 1.5rem;
+        }
+
+        .exams-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+
+        .reviews-title {
+            gap: 1rem;
+        }
+
+        .reviews-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .exam-card {
+            padding: 1.25rem;
+        }
+    }
+</style>
+{% endblock %}

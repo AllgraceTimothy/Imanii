@@ -1,455 +1,57 @@
 {% extends "base.html" %}
+{% load static %}
+{% block title %}Results View{% endblock %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Exam for {{ exam.patient.username }}</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        
-        :root {
-            --primary: #3b82f6;
-            --primary-light: rgba(59, 130, 246, 0.1);
-            --primary-dark: #2563eb;
-            --secondary: #1f2937;
-            --dark: #111827;
-            --light: #1f2937;
-            --text-primary: #f9fafb;
-            --text-secondary: #d1d5db;
-            --gray: #6b7280;
-            --gray-light: #374151;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --bg-dark: #111827;
-            --bg-darker: #0a0f1a;
-            --card-bg: #1f2937;
-            --card-border: rgba(255, 255, 255, 0.05);
-            --section-border: rgba(59, 130, 246, 0.2);
-        }
-        
-        body {
-            background-color: var(--bg-dark);
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
-            background-size: 50px 50px;
-            background-repeat: repeat;
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 2rem;
-        }
-        
-        .exam-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .exam-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            border-radius: 8px;
-            border: none;
-        }
-        
-        .back-btn {
-            background-color: var(--gray-light);
-            color: var(--text-primary);
-        }
-        
-        .back-btn:hover {
-            background-color: var(--gray);
-            transform: translateY(-2px);
-        }
-        
-        .primary-btn {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .primary-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .exam-title {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .exam-icon {
-            width: 48px;
-            height: 48px;
-            background-color: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-        
-        .exam-icon svg {
-            width: 24px;
-            height: 24px;
-            color: var(--primary);
-        }
-        
-        .exam-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
-            border: 1px solid var(--card-border);
-            margin-bottom: 2rem;
-        }
-        
-        .exam-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .detail-card {
-            background-color: var(--bg-darker);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--primary);
-        }
-        
-        .detail-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--gray-light);
-        }
-        
-        .detail-header svg {
-            width: 20px;
-            height: 20px;
-            color: var(--primary);
-        }
-        
-        .detail-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        
-        .detail-item {
-            margin-bottom: 1rem;
-        }
-        
-        .detail-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-        }
-        
-        .detail-value {
-            font-size: 1rem;
-            font-weight: 500;
-            line-height: 1.6;
-        }
-        
-        .detail-value.empty {
-            color: var(--gray);
-            font-style: italic;
-        }
-        
-        .notes-card {
-            background-color: var(--bg-darker);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--success);
-        }
-        
-        .pregnancy-card {
-            border-left: 3px solid var(--warning);
-        }
-        
-        .treatment-card {
-            border-left: 3px solid var(--danger);
-        }
-        
-        .notes-content {
-            white-space: pre-line;
-            line-height: 1.6;
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .exam-card {
-                padding: 1.5rem;
-            }
-            
-            .exam-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .exam-details {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .exam-card {
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        /* Print-specific styles */
-        @media print {
-                 /* Base print reset */
-                body {
-                    background-color: white !important;
-                    color: #000 !important;
-                    font-family: Arial, sans-serif;
-                    font-size: 12pt;
-                    line-height: 1.5;
-                    padding: 20px !important;
-                }
-                
-                /* Hide non-print elements */
-                .no-print, .header-actions, .print-button {
-                    display: none !important;
-                }
-                
-                /* Container and card styling */
-                .exam-container {
-                    max-width: 100% !important;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                }
-                
-                .exam-card, .detail-card, .notes-card {
-                    background-color: white !important;
-                    color: #000 !important;
-                    box-shadow: none !important;
-                    border: 1px solid #333 !important;
-                    page-break-inside: avoid;
-                    margin-bottom: 20px;
-                }
-                
-                /* Header styling */
-                .exam-header {
-                    border-bottom: 2px solid #000 !important;
-                    margin-bottom: 15px !important;
-                    padding-bottom: 10px !important;
-                }
-                
-                .exam-title h2 {
-                    color: #000 !important;
-                    font-size: 18pt;
-                    margin-bottom: 5px;
-                }
-                
-                /* Detail card styling */
-                .detail-card {
-                    border-left: 4px solid #333 !important;
-                    margin-bottom: 15px;
-                }
-                
-                .pregnancy-card {
-                    border-left: 4px solid #d97706 !important; /* Darker orange */
-                }
-                
-                .treatment-card {
-                    border-left: 4px solid #dc2626 !important; /* Darker red */
-                }
-                
-                .notes-card {
-                    border-left: 4px solid #059669 !important; /* Darker green */
-                }
-                
-                /* Card content styling */
-                .detail-header {
-                    border-bottom: 1px solid #666 !important;
-                }
-                
-                .detail-title {
-                    color: #111 !important;
-                    font-size: 14pt !important;
-                    font-weight: bold !important;
-                }
-                
-                .detail-label {
-                    color: #333 !important;
-                    font-weight: bold !important;
-                    font-size: 10pt;
-                }
-                
-                .detail-value {
-                    color: #000 !important;
-                    font-size: 11pt;
-                    line-height: 1.6;
-                }
-                
-                .detail-value.empty {
-                    color: #666 !important;
-                }
-                
-                /* Notes section */
-                .notes-content {
-                    color: #000 !important;
-                    font-size: 11pt;
-                    line-height: 1.6;
-                }
-                
-                /* Grid layout for print */
-                .exam-details {
-                    display: block !important;
-                }
-                
-                /* Icons - make visible in print */
-                .exam-icon {
-                    background-color: #f0f0f0 !important;
-                    box-shadow: none !important;
-                }
-                
-                .exam-icon svg, .detail-header svg {
-                    color: #333 !important;
-                }
-                
-                /* Page breaks and margins */
-                @page {
-                    size: auto;
-                    margin: 15mm;
-                }
-                
-                /* Force some space between sections */
-                .section {
-                    margin-bottom: 15px;
-                    page-break-inside: avoid;
-                }
-                
-                /* Links - show URL for printed version */
-                a[href]:after {
-                    content: " (" attr(href) ")";
-                    font-size: 80%;
-                    color: #666;
-                }
-                
-                /* Remove all background elements */
-                body, .exam-card, .detail-card {
-                    background-image: none !important;
-                }
-            }
-
-        /* Print button styles */
-        .print-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .print-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-    </style>
-</head>
-<body>
-    <div class="exam-container">
-        <div class="exam-header">
-            <div class="exam-title">
-                <div class="exam-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                </div>
-                <h2>Medical Exam for {{ exam.patient.username }}</h2>
+<div class="dashboard-container">
+    <!-- Glow effects -->
+    <div class="glow glow-primary"></div>
+    <div class="glow glow-accent"></div>
+    
+    <div class="dashboard-header">
+        <div class="exam-title">
+            <div class="exam-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
             </div>
-            
-            <div class="header-actions no-print">
-                {% if user_role == "medic" %}
-                <a href="{% url 'view_patient' exam.patient.id %}" class="btn back-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to Patient
-                </a>
-                {% else %}
-                <a href="{% url 'view_past_exams' %}" class="btn back-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to My Exams
-                </a>
-                {% endif %}
+            <div class="welcome-text">
+                <h2>Medical Exam for {{ exam.patient.first_name }} {{ exam.patient.last_name }}</h2>
+                <p>Patient Code: {{ exam.patient.imanis_code }}</p>
             </div>
         </div>
         
-        <!-- Floating print button -->
-        <button onclick="window.print()" class="print-button no-print" title="Print this exam">
-            🖨️
-        </button>
-        
+        <div class="header-actions no-print">
+            {% if user_role == "medic" %}
+            <a href="{% url 'view_patient' exam.patient.id %}" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Patient
+            </a>
+            {% else %}
+            <a href="{% url 'view_past_exams' %}" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to My Exams
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Floating print button -->
+    <button onclick="window.print()" class="print-button no-print" title="Print this exam">
+        🖨️
+    </button>
+    
+    <div class="dashboard-content">
         <div class="exam-card">
             <div class="exam-details">
                 <!-- Basic Info Card -->
                 <div class="detail-card">
                     <div class="detail-header">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <h3 class="detail-title">Exam Information</h3>
                     </div>
@@ -461,23 +63,25 @@
                     
                     <div class="detail-item">
                         <div class="detail-label">Performed By</div>
-                        <div class="detail-value">Dr. {{ exam.medic.username }} </div>
+                        <div class="detail-value">Dr. {{ exam.medic.last_name }}</div>
                     </div>
+                    
                     <div class="detail-item">
                         <div class="detail-label">Patient Name</div>
-                        <div class="detail-value">{{ exam.patient.patientprofile.full_name }} </div>
+                        <div class="detail-value">{{ exam.patient.first_name }} {{ exam.patient.last_name }}</div>
                     </div>
+                    
                     <div class="detail-item">
                         <div class="detail-label">Imanis Code</div>
-                        <div class="detail-value">{{ exam.patient.imanis_code }} </div>
+                        <div class="detail-value">{{ exam.patient.imanis_code }}</div>
                     </div>
                 </div>
                 
                 <!-- Vital Signs Card -->
                 <div class="detail-card">
                     <div class="detail-header">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                         </svg>
                         <h3 class="detail-title">Vital Signs</h3>
                     </div>
@@ -521,8 +125,8 @@
                 <!-- Lab & Procedures Card -->
                 <div class="detail-card">
                     <div class="detail-header">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                         </svg>
                         <h3 class="detail-title">Tests & Procedures</h3>
                     </div>
@@ -560,8 +164,8 @@
                 {% if exam.patient.patientprofile.gender == 'female' %}
                 <div class="detail-card pregnancy-card">
                     <div class="detail-header">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
                         <h3 class="detail-title">Pregnancy Information</h3>
                     </div>
@@ -601,8 +205,8 @@
                 <!-- Treatment Plan Card -->
                 <div class="detail-card treatment-card">
                     <div class="detail-header">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                         <h3 class="detail-title">Treatment Plan</h3>
                     </div>
@@ -646,8 +250,8 @@
                 <!-- Doctor's Notes Card -->
                 <div class="notes-card">
                     <div class="detail-header">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         <h3 class="detail-title">Doctor's Notes</h3>
                     </div>
@@ -663,7 +267,463 @@
             </div>
         </div>
     </div>
+</div>
 
-</body>
-</html>
+<style>
+    :root {
+        --primary: #8b5cf6;
+        --primary-light: rgba(139, 92, 246, 0.1);
+        --primary-dark: #7c3aed;
+        --accent: #ec4899;
+        --danger: #ef4444;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --secondary: #1e293b;
+        --bg-darker: #0f172a;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --transition: all 0.3s ease;
+    }
+    
+    /* Glow effects */
+    .glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+        z-index: 1;
+    }
+    
+    .glow-primary {
+        background: var(--primary);
+        top: 20%;
+        left: 10%;
+    }
+    
+    .glow-accent {
+        background: var(--accent);
+        bottom: 30%;
+        right: 15%;
+    }
+
+    /* Dashboard Container */
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Header */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .exam-title {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .exam-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .exam-icon svg {
+        width: 28px;
+        height: 28px;
+        color: var(--primary);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .welcome-text h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .welcome-text p {
+        color: var(--text-secondary);
+        font-size: 0.9375rem;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .back-btn {
+        background-color: var(--secondary);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        text-decoration: none;
+    }
+
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transform: translateY(-2px);
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .back-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Exam Card */
+    .exam-card {
+        background-color: var(--secondary);
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        padding: 2rem;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Exam Details Grid */
+    .exam-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Detail Cards */
+    .detail-card {
+        background-color: var(--bg-darker);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border-left: 4px solid var(--primary);
+        transition: var(--transition);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .detail-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .pregnancy-card {
+        border-left: 4px solid var(--warning);
+    }
+
+    .treatment-card {
+        border-left: 4px solid var(--danger);
+    }
+
+    .notes-card {
+        background-color: var(--bg-darker);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 3px solid var(--success);
+    }
+
+    /* Detail Header */
+    .detail-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .detail-header svg {
+        width: 20px;
+        height: 20px;
+        color: var(--primary);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .pregnancy-card .detail-header svg {
+        color: var(--warning);
+    }
+
+    .treatment-card .detail-header svg {
+        color: var(--danger);
+    }
+
+    .notes-card .detail-header svg {
+        color: var(--success);
+    }
+
+    .detail-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    /* Detail Items */
+    .detail-item {
+        margin-bottom: 1rem;
+    }
+
+    .detail-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .detail-value.empty {
+        color: var(--text-secondary);
+        font-style: italic;
+    }
+
+    /* Notes Content */
+    .notes-content {
+        white-space: pre-line;
+        line-height: 1.6;
+    }
+
+    /* Print Button */
+    .print-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+
+    .print-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Print Styles */
+    @media print {
+        body {
+            background-color: white !important;
+            color: #000 !important;
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            padding: 20px !important;
+        }
+        
+        .no-print, .header-actions, .print-button {
+            display: none !important;
+        }
+        
+        .dashboard-container {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .exam-card, .detail-card, .notes-card {
+            background-color: white !important;
+            color: #000 !important;
+            box-shadow: none !important;
+            border: 1px solid #333 !important;
+            page-break-inside: avoid;
+            margin-bottom: 20px;
+        }
+        
+        .exam-header {
+            border-bottom: 2px solid #000 !important;
+            margin-bottom: 15px !important;
+            padding-bottom: 10px !important;
+        }
+        
+        .exam-title h2 {
+            color: #000 !important;
+            font-size: 18pt;
+            margin-bottom: 5px;
+        }
+        
+        .detail-card {
+            border-left: 4px solid #333 !important;
+            margin-bottom: 15px;
+        }
+        
+        .pregnancy-card {
+            border-left: 4px solid #d97706 !important;
+        }
+        
+        .treatment-card {
+            border-left: 4px solid #dc2626 !important;
+        }
+        
+        .notes-card {
+            border-left: 4px solid #059669 !important;
+        }
+        
+        .detail-header {
+            border-bottom: 1px solid #666 !important;
+        }
+        
+        .detail-title {
+            color: #111 !important;
+            font-size: 14pt !important;
+            font-weight: bold !important;
+        }
+        
+        .detail-label {
+            color: #333 !important;
+            font-weight: bold !important;
+            font-size: 10pt;
+        }
+        
+        .detail-value {
+            color: #000 !important;
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+        
+        .detail-value.empty {
+            color: #666 !important;
+        }
+        
+        .notes-content {
+            color: #000 !important;
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+        
+        .exam-details {
+            display: block !important;
+        }
+        
+        .exam-icon {
+            background-color: #f0f0f0 !important;
+            box-shadow: none !important;
+        }
+        
+        .exam-icon svg, .detail-header svg {
+            color: #333 !important;
+        }
+        
+        @page {
+            size: auto;
+            margin: 15mm;
+        }
+        
+        .section {
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+        
+        a[href]:after {
+            content: " (" attr(href) ")";
+            font-size: 80%;
+            color: #666;
+        }
+        
+        body, .exam-card, .detail-card {
+            background-image: none !important;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1.5rem;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .back-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .exam-card {
+            padding: 1.5rem;
+        }
+
+        .exam-details {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+
+        .exam-title {
+            gap: 1rem;
+        }
+
+        .exam-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .detail-card {
+            padding: 1.25rem;
+        }
+    }
+</style>
 {% endblock %}

@@ -1,640 +1,813 @@
 {% extends "base.html" %}
+{% load static %}
+{% block title %}Medical Exam{% endblock %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Medical Exam for {{ patient.username }}</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        
-        :root {
-            --primary: #3b82f6;
-            --primary-light: rgba(59, 130, 246, 0.1);
-            --primary-dark: #2563eb;
-            --secondary: #1f2937;
-            --dark: #111827;
-            --light: #1f2937;
-            --text-primary: #f9fafb;
-            --text-secondary: #d1d5db;
-            --gray: #6b7280;
-            --gray-light: #374151;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --bg-dark: #111827;
-            --bg-darker: #0a0f1a;
-            --card-bg: #1f2937;
-            --card-border: rgba(255, 255, 255, 0.05);
-            --section-border: rgba(59, 130, 246, 0.2);
-        }
-        
-        body {
-            background-color: var(--bg-dark);
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
-            background-size: 50px 50px;
-            background-repeat: repeat;
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 2rem;
-        }
-        
-        .exam-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        .exam-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            border-radius: 8px;
-            border: none;
-        }
-        
-        .back-btn {
-            background-color: var(--gray-light);
-            color: var(--text-primary);
-        }
-        
-        .back-btn:hover {
-            background-color: var(--gray);
-            transform: translateY(-2px);
-        }
-        
-        .primary-btn {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .primary-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .exam-title {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .exam-icon {
-            width: 48px;
-            height: 48px;
-            background-color: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-        
-        .exam-icon svg {
-            width: 24px;
-            height: 24px;
-            color: var(--primary);
-        }
-        
-        .exam-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
-            border: 1px solid var(--card-border);
-            margin-bottom: 2rem;
-        }
-        
-        .form-section {
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--section-border);
-        }
-        
-        .form-section:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        
-        .section-icon {
-            width: 24px;
-            height: 24px;
-            color: var(--primary);
-        }
-        
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background-color: var(--bg-darker);
-            border: 1px solid var(--gray-light);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-        }
-        
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        select.form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1em;
-        }
-        
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .help-text {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
-        }
-        
-        .error-message {
-            color: var(--danger);
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
-        }
-        
-        .pregnancy-section {
-            background-color: rgba(245, 158, 11, 0.05);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--warning);
-        }
-        
-        .treatment-section {
-            background-color: rgba(239, 68, 68, 0.05);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--danger);
-        }
-        
-        .vitals-section {
-            background-color: rgba(16, 185, 129, 0.05);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--success);
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .exam-card {
-                padding: 1.5rem;
-            }
-            
-            .exam-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .form-actions {
-                flex-direction: column;
-            }
-            
-            .form-actions .btn {
-                width: 100%;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .exam-card {
-            animation: fadeIn 0.6s ease-out;
-        }
-    </style>
-</head>
-<body>
-    <div class="exam-container">
-        <div class="exam-header">
-            <div class="exam-title">
-                <div class="exam-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                </div>
-                <h2>New Medical Exam for {{ patient.username }}</h2>
+<div class="exam-container">
+    <!-- Glow effects from base template -->
+    <div class="glow glow-primary"></div>
+    <div class="glow glow-accent"></div>
+    
+    <div class="exam-header">
+        <div class="exam-title">
+            <div class="exam-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
             </div>
-            
-            <div class="header-actions">
-                <a href="{% url 'view_patient' patient.id %}" class="btn back-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to Patient
-                </a>
+            <div class="welcome-text">
+                <h2>New Medical Exam for {{ patient.first_name }} {{ patient.last_name }}</h2>
+                <p>Imanis Code: {{ patient.imanis_code }}</p>
             </div>
         </div>
         
-        <div class="exam-card">
-            <form method="post">
-                {% csrf_token %}
+        <div class="header-actions">
+            <a href="{% url 'view_patient' patient.id %}" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Patient
+            </a>
+        </div>
+    </div>
+    
+    <div class="exam-card">
+        <form method="post">
+            {% csrf_token %}
 
-                <!-- Vital Signs Section -->
-                <div class="form-section vitals-section">
-                    <div class="section-header">
-                        <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
-                        <h3 class="section-title">Vital Signs</h3>
-                    </div>
-                    
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="{{ form.blood_pressure.id_for_label }}">{{ form.blood_pressure.label }}</label>
-                            <input type="text" class="form-control" id="{{ form.blood_pressure.id_for_label }}" 
+            <!-- Vital Signs Section -->
+            <div class="form-section vitals-section">
+                <div class="section-header">
+                    <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    <h3 class="section-title">Vital Signs</h3>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label for="{{ form.blood_pressure.id_for_label }}">{{ form.blood_pressure.label }}</label>
+                        <div class="input-container">
+                            <input type="text" id="{{ form.blood_pressure.id_for_label }}" 
                                    name="{{ form.blood_pressure.name }}" value="{{ form.blood_pressure.value|default:'' }}"
                                    placeholder="e.g., 120/80 mmHg">
-                            {% if form.blood_pressure.help_text %}
-                                <small class="help-text">{{ form.blood_pressure.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.blood_pressure.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.heart_rate.id_for_label }}">{{ form.heart_rate.label }}</label>
-                            <input type="number" class="form-control" id="{{ form.heart_rate.id_for_label }}" 
-                                   name="{{ form.heart_rate.name }}" value="{{ form.heart_rate.value|default:'' }}"
-                                   min="0" placeholder="bpm">
-                            {% if form.heart_rate.help_text %}
-                                <small class="help-text">{{ form.heart_rate.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.heart_rate.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.temperature.id_for_label }}">{{ form.temperature.label }}</label>
-                            <input type="number" step="0.1" class="form-control" id="{{ form.temperature.id_for_label }}" 
-                                   name="{{ form.temperature.name }}" value="{{ form.temperature.value|default:'' }}"
-                                   placeholder="°C">
-                            {% if form.temperature.help_text %}
-                                <small class="help-text">{{ form.temperature.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.temperature.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.respiratory_rate.id_for_label }}">{{ form.respiratory_rate.label }}</label>
-                            <input type="number" class="form-control" id="{{ form.respiratory_rate.id_for_label }}" 
-                                   name="{{ form.respiratory_rate.name }}" value="{{ form.respiratory_rate.value|default:'' }}"
-                                   placeholder="breaths/min">
-                            {% if form.respiratory_rate.help_text %}
-                                <small class="help-text">{{ form.respiratory_rate.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.respiratory_rate.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.oxygen_saturation.id_for_label }}">{{ form.oxygen_saturation.label }}</label>
-                            <input type="number" class="form-control" id="{{ form.oxygen_saturation.id_for_label }}" 
-                                   name="{{ form.oxygen_saturation.name }}" value="{{ form.oxygen_saturation.value|default:'' }}"
-                                   min="0" max="100" placeholder="%">
-                            {% if form.oxygen_saturation.help_text %}
-                                <small class="help-text">{{ form.oxygen_saturation.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.oxygen_saturation.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tests & Procedures Section -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
-                        <h3 class="section-title">Tests & Procedures</h3>
-                    </div>
-                    
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="{{ form.lab_test.id_for_label }}">{{ form.lab_test.label }}</label>
-                            <select class="form-control" id="{{ form.lab_test.id_for_label }}" name="{{ form.lab_test.name }}">
-                                {% for choice in form.lab_test.field.choices %}
-                                    <option value="{{ choice.0 }}" {% if form.lab_test.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.lab_test.help_text %}
-                                <small class="help-text">{{ form.lab_test.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.lab_test.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.lab_test_result.id_for_label }}">{{ form.lab_test_result.label }}</label>
-                            <textarea class="form-control" id="{{ form.lab_test_result.id_for_label }}" 
-                                      name="{{ form.lab_test_result.name }}" rows="3">{% if form.lab_test_result.value %}{{ form.lab_test_result.value }}{% endif %}</textarea>
-                            {% if form.lab_test_result.help_text %}
-                                <small class="help-text">{{ form.lab_test_result.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.lab_test_result.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.procedure.id_for_label }}">{{ form.procedure.label }}</label>
-                            <select class="form-control" id="{{ form.procedure.id_for_label }}" name="{{ form.procedure.name }}">
-                                {% for choice in form.procedure.field.choices %}
-                                    <option value="{{ choice.0 }}" {% if form.procedure.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.procedure.help_text %}
-                                <small class="help-text">{{ form.procedure.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.procedure.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.procedure_result.id_for_label }}">{{ form.procedure_result.label }}</label>
-                            <textarea class="form-control" id="{{ form.procedure_result.id_for_label }}" 
-                                      name="{{ form.procedure_result.name }}" rows="3">{% if form.procedure_result.value %}{{ form.procedure_result.value }}{% endif %}</textarea>
-                            {% if form.procedure_result.help_text %}
-                                <small class="help-text">{{ form.procedure_result.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.procedure_result.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Pregnancy Information (if female) -->
-                {% if patient.patientprofile.gender == 'female' %}
-                <div class="form-section pregnancy-section">
-                    <div class="section-header">
-                        <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        <h3 class="section-title">Pregnancy Information</h3>
-                    </div>
-                    
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="{{ form.is_pregnant.id_for_label }}">{{ form.is_pregnant.label }}</label>
-                            <select class="form-control" id="{{ form.is_pregnant.id_for_label }}" name="{{ form.is_pregnant.name }}">
-                                <option value="" {% if form.is_pregnant.value is None or form.is_pregnant.value == "" %}selected{% endif %}>—</option>
-                                <option value="True" {% if form.is_pregnant.value == True or form.is_pregnant.value == 'True' %}selected{% endif %}>Yes</option>
-                                <option value="False" {% if form.is_pregnant.value == False or form.is_pregnant.value == 'False' %}selected{% endif %}>No</option>
-                            </select>
-                            {% if form.is_pregnant.help_text %}
-                                <small class="help-text">{{ form.is_pregnant.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.is_pregnant.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group" id="pregnancy_weeks_group" style="display: {% if form.is_pregnant.value == True or form.is_pregnant.value == 'True' %}block{% else %}none{% endif %};">
-                            <label for="{{ form.pregnancy_weeks.id_for_label }}">{{ form.pregnancy_weeks.label }}</label>
-                            <input type="number" class="form-control" id="{{ form.pregnancy_weeks.id_for_label }}" 
-                                   name="{{ form.pregnancy_weeks.name }}" value="{{ form.pregnancy_weeks.value|default:'' }}"
-                                   min="0" placeholder="weeks">
-                            {% if form.pregnancy_weeks.help_text %}
-                                <small class="help-text">{{ form.pregnancy_weeks.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.pregnancy_weeks.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group" id="last_menstrual_period_group" style="display: {% if form.is_pregnant.value == True or form.is_pregnant.value == 'True' %}block{% else %}none{% endif %};">
-                            <label for="{{ form.last_menstrual_period.id_for_label }}">{{ form.last_menstrual_period.label }}</label>
-                            <input type="date" class="form-control" id="{{ form.last_menstrual_period.id_for_label }}" 
-                                   name="{{ form.last_menstrual_period.name }}" value="{{ form.last_menstrual_period.value|default:'' }}">
-                            {% if form.last_menstrual_period.help_text %}
-                                <small class="help-text">{{ form.last_menstrual_period.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.last_menstrual_period.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group" id="menstrual_cycle_notes_group" style="display: {% if form.is_pregnant.value == True or form.is_pregnant.value == 'True' %}block{% else %}none{% endif %};">
-                            <label for="{{ form.menstrual_cycle_notes.id_for_label }}">{{ form.menstrual_cycle_notes.label }}</label>
-                            <textarea class="form-control" id="{{ form.menstrual_cycle_notes.id_for_label }}" 
-                                      name="{{ form.menstrual_cycle_notes.name }}" rows="2">{% if form.menstrual_cycle_notes.value %}{{ form.menstrual_cycle_notes.value }}{% endif %}</textarea>
-                            {% if form.menstrual_cycle_notes.help_text %}
-                                <small class="help-text">{{ form.menstrual_cycle_notes.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.menstrual_cycle_notes.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                
-                <!-- Treatment Plan Section -->
-                <div class="form-section treatment-section">
-                    <div class="section-header">
-                        <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                        </svg>
-                        <h3 class="section-title">Treatment Plan</h3>
-                    </div>
-                    
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="{{ form.diagnosis.id_for_label }}">{{ form.diagnosis.label }}</label>
-                            <textarea class="form-control" id="{{ form.diagnosis.id_for_label }}" 
-                                      name="{{ form.diagnosis.name }}" rows="3">{% if form.diagnosis.value %}{{ form.diagnosis.value }}{% endif %}</textarea>
-                            {% if form.diagnosis.help_text %}
-                                <small class="help-text">{{ form.diagnosis.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.diagnosis.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.prescribed_medications.id_for_label }}">{{ form.prescribed_medications.label }}</label>
-                            <textarea class="form-control" id="{{ form.prescribed_medications.id_for_label }}" 
-                                      name="{{ form.prescribed_medications.name }}" rows="2">{% if form.prescribed_medications.value %}{{ form.prescribed_medications.value }}{% endif %}</textarea>
-                            {% if form.prescribed_medications.help_text %}
-                                <small class="help-text">{{ form.prescribed_medications.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.prescribed_medications.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.follow_up_instructions.id_for_label }}">{{ form.follow_up_instructions.label }}</label>
-                            <textarea class="form-control" id="{{ form.follow_up_instructions.id_for_label }}" 
-                                      name="{{ form.follow_up_instructions.name }}" rows="2">{% if form.follow_up_instructions.value %}{{ form.follow_up_instructions.value }}{% endif %}</textarea>
-                            {% if form.follow_up_instructions.help_text %}
-                                <small class="help-text">{{ form.follow_up_instructions.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.follow_up_instructions.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.lifestyle_recommendations.id_for_label }}">{{ form.lifestyle_recommendations.label }}</label>
-                            <textarea class="form-control" id="{{ form.lifestyle_recommendations.id_for_label }}" 
-                                      name="{{ form.lifestyle_recommendations.name }}" rows="2">{% if form.lifestyle_recommendations.value %}{{ form.lifestyle_recommendations.value }}{% endif %}</textarea>
-                            {% if form.lifestyle_recommendations.help_text %}
-                                <small class="help-text">{{ form.lifestyle_recommendations.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.lifestyle_recommendations.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="{{ form.referred_to_specialist.id_for_label }}">{{ form.referred_to_specialist.label }}</label>
-                            <input type="text" class="form-control" id="{{ form.referred_to_specialist.id_for_label }}" 
-                                   name="{{ form.referred_to_specialist.name }}" value="{{ form.referred_to_specialist.value|default:'' }}">
-                            {% if form.referred_to_specialist.help_text %}
-                                <small class="help-text">{{ form.referred_to_specialist.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.referred_to_specialist.errors %}
-                                <div class="error-message">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Doctor's Notes Section -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <h3 class="section-title">Doctor's Notes</h3>
+                        {% if form.blood_pressure.help_text %}
+                            <small class="form-help">{{ form.blood_pressure.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.blood_pressure.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     
                     <div class="form-group">
-                        <label>Final Comments</label>
-                        <textarea class="form-control" id="{{ form.review_notes.id_for_label }}" 
-                                  name="{{ form.review_notes.name }}" rows="4">{% if form.review_notes.value %}{{ form.review_notes.value }}{% endif %}</textarea>
-                        {% if form.review_notes.help_text %}
-                            <small class="help-text">{{ form.review_notes.help_text }}</small>
+                        <label for="{{ form.heart_rate.id_for_label }}">{{ form.heart_rate.label }}</label>
+                        <div class="input-container">
+                            <input type="number" id="{{ form.heart_rate.id_for_label }}" 
+                                   name="{{ form.heart_rate.name }}" value="{{ form.heart_rate.value|default:'' }}"
+                                   min="0" placeholder="bpm">
+                        </div>
+                        {% if form.heart_rate.help_text %}
+                            <small class="form-help">{{ form.heart_rate.help_text }}</small>
                         {% endif %}
-                        {% for error in form.review_notes.errors %}
+                        {% for error in form.heart_rate.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.temperature.id_for_label }}">{{ form.temperature.label }}</label>
+                        <div class="input-container">
+                            <input type="number" step="0.1" id="{{ form.temperature.id_for_label }}" 
+                                   name="{{ form.temperature.name }}" value="{{ form.temperature.value|default:'' }}"
+                                   placeholder="°C">
+                        </div>
+                        {% if form.temperature.help_text %}
+                            <small class="form-help">{{ form.temperature.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.temperature.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.respiratory_rate.id_for_label }}">{{ form.respiratory_rate.label }}</label>
+                        <div class="input-container">
+                            <input type="number" id="{{ form.respiratory_rate.id_for_label }}" 
+                                   name="{{ form.respiratory_rate.name }}" value="{{ form.respiratory_rate.value|default:'' }}"
+                                   placeholder="breaths/min">
+                        </div>
+                        {% if form.respiratory_rate.help_text %}
+                            <small class="form-help">{{ form.respiratory_rate.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.respiratory_rate.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.oxygen_saturation.id_for_label }}">{{ form.oxygen_saturation.label }}</label>
+                        <div class="input-container">
+                            <input type="number" id="{{ form.oxygen_saturation.id_for_label }}" 
+                                   name="{{ form.oxygen_saturation.name }}" value="{{ form.oxygen_saturation.value|default:'' }}"
+                                   min="0" max="100" placeholder="%">
+                        </div>
+                        {% if form.oxygen_saturation.help_text %}
+                            <small class="form-help">{{ form.oxygen_saturation.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.oxygen_saturation.errors %}
                             <div class="error-message">{{ error }}</div>
                         {% endfor %}
                     </div>
                 </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn primary-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Submit Exam
-                    </button>
+            </div>
+            
+            <!-- Tests & Procedures Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <h3 class="section-title">Tests & Procedures</h3>
                 </div>
-            </form>
-        </div>
+                
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label for="{{ form.lab_test.id_for_label }}">{{ form.lab_test.label }}</label>
+                        <div class="input-container">
+                            <select id="{{ form.lab_test.id_for_label }}" name="{{ form.lab_test.name }}">
+                                {% for choice in form.lab_test.field.choices %}
+                                    <option value="{{ choice.0 }}" {% if form.lab_test.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if form.lab_test.help_text %}
+                            <small class="form-help">{{ form.lab_test.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.lab_test.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.lab_test_result.id_for_label }}">{{ form.lab_test_result.label }}</label>
+                        <div class="input-container">
+                            <textarea id="{{ form.lab_test_result.id_for_label }}" 
+                                      name="{{ form.lab_test_result.name }}" rows="3">{% if form.lab_test_result.value %}{{ form.lab_test_result.value }}{% endif %}</textarea>
+                        </div>
+                        {% if form.lab_test_result.help_text %}
+                            <small class="form-help">{{ form.lab_test_result.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.lab_test_result.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.procedure.id_for_label }}">{{ form.procedure.label }}</label>
+                        <div class="input-container">
+                            <select id="{{ form.procedure.id_for_label }}" name="{{ form.procedure.name }}">
+                                {% for choice in form.procedure.field.choices %}
+                                    <option value="{{ choice.0 }}" {% if form.procedure.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if form.procedure.help_text %}
+                            <small class="form-help">{{ form.procedure.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.procedure.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.procedure_result.id_for_label }}">{{ form.procedure_result.label }}</label>
+                        <div class="input-container">
+                            <textarea id="{{ form.procedure_result.id_for_label }}" 
+                                      name="{{ form.procedure_result.name }}" rows="3">{% if form.procedure_result.value %}{{ form.procedure_result.value }}{% endif %}</textarea>
+                        </div>
+                        {% if form.procedure_result.help_text %}
+                            <small class="form-help">{{ form.procedure_result.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.procedure_result.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pregnancy Information (only appears if patient is a female) -->
+            {% if patient.patientprofile.gender == 'female' %}
+            <div class="form-section pregnancy-section">
+                <div class="section-header">
+                    <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <h3 class="section-title">Pregnancy Information</h3>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label for="{{ form.is_pregnant.id_for_label }}">{{ form.is_pregnant.label }}</label>
+                        <div class="input-container">
+                            <select id="{{ form.is_pregnant.id_for_label }}" name="{{ form.is_pregnant.name }}">
+                                <option value="" {% if form.is_pregnant.value is None or form.is_pregnant.value == "" %}selected{% endif %}>—</option>
+                                <option value="True" {% if form.is_pregnant.value == True or form.is_pregnant.value == 'True' %}selected{% endif %}>Yes</option>
+                                <option value="False" {% if form.is_pregnant.value == False or form.is_pregnant.value == 'False' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+                        {% if form.is_pregnant.help_text %}
+                            <small class="form-help">{{ form.is_pregnant.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.is_pregnant.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group" id="pregnancy_weeks_group" style="display: {% if form.is_pregnant.value == True or form.is_pregnant.value == 'True' %}block{% else %}none{% endif %};">
+                        <label for="{{ form.pregnancy_weeks.id_for_label }}">{{ form.pregnancy_weeks.label }}</label>
+                        <div class="input-container">
+                            <input type="number" id="{{ form.pregnancy_weeks.id_for_label }}" 
+                                   name="{{ form.pregnancy_weeks.name }}" value="{{ form.pregnancy_weeks.value|default:'' }}"
+                                   min="0" placeholder="weeks">
+                        </div>
+                        {% if form.pregnancy_weeks.help_text %}
+                            <small class="form-help">{{ form.pregnancy_weeks.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.pregnancy_weeks.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group" id="last_menstrual_period_group" style="display: {% if form.is_pregnant.value == True or form.is_pregnant.value == 'True' %}block{% else %}none{% endif %};">
+                        <label for="{{ form.last_menstrual_period.id_for_label }}">{{ form.last_menstrual_period.label }}</label>
+                        <div class="input-container">
+                            <input type="date" id="{{ form.last_menstrual_period.id_for_label }}" 
+                                   name="{{ form.last_menstrual_period.name }}" value="{{ form.last_menstrual_period.value|default:'' }}">
+                        </div>
+                        {% if form.last_menstrual_period.help_text %}
+                            <small class="form-help">{{ form.last_menstrual_period.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.last_menstrual_period.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group" id="menstrual_cycle_notes_group" style="display: {% if form.is_pregnant.value == True or form.is_pregnant.value == 'True' %}block{% else %}none{% endif %};">
+                        <label for="{{ form.menstrual_cycle_notes.id_for_label }}">{{ form.menstrual_cycle_notes.label }}</label>
+                        <div class="input-container">
+                            <textarea id="{{ form.menstrual_cycle_notes.id_for_label }}" 
+                                      name="{{ form.menstrual_cycle_notes.name }}" rows="2">{% if form.menstrual_cycle_notes.value %}{{ form.menstrual_cycle_notes.value }}{% endif %}</textarea>
+                        </div>
+                        {% if form.menstrual_cycle_notes.help_text %}
+                            <small class="form-help">{{ form.menstrual_cycle_notes.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.menstrual_cycle_notes.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Treatment Plan Section -->
+            <div class="form-section treatment-section">
+                <div class="section-header">
+                    <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    <h3 class="section-title">Treatment Plan</h3>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label for="{{ form.diagnosis.id_for_label }}">{{ form.diagnosis.label }}</label>
+                        <div class="input-container">
+                            <textarea id="{{ form.diagnosis.id_for_label }}" 
+                                      name="{{ form.diagnosis.name }}" rows="3">{% if form.diagnosis.value %}{{ form.diagnosis.value }}{% endif %}</textarea>
+                        </div>
+                        {% if form.diagnosis.help_text %}
+                            <small class="form-help">{{ form.diagnosis.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.diagnosis.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.prescribed_medications.id_for_label }}">{{ form.prescribed_medications.label }}</label>
+                        <div class="input-container">
+                            <textarea id="{{ form.prescribed_medications.id_for_label }}" 
+                                      name="{{ form.prescribed_medications.name }}" rows="2">{% if form.prescribed_medications.value %}{{ form.prescribed_medications.value }}{% endif %}</textarea>
+                        </div>
+                        {% if form.prescribed_medications.help_text %}
+                            <small class="form-help">{{ form.prescribed_medications.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.prescribed_medications.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.follow_up_instructions.id_for_label }}">{{ form.follow_up_instructions.label }}</label>
+                        <div class="input-container">
+                            <textarea id="{{ form.follow_up_instructions.id_for_label }}" 
+                                      name="{{ form.follow_up_instructions.name }}" rows="2">{% if form.follow_up_instructions.value %}{{ form.follow_up_instructions.value }}{% endif %}</textarea>
+                        </div>
+                        {% if form.follow_up_instructions.help_text %}
+                            <small class="form-help">{{ form.follow_up_instructions.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.follow_up_instructions.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.lifestyle_recommendations.id_for_label }}">{{ form.lifestyle_recommendations.label }}</label>
+                        <div class="input-container">
+                            <textarea id="{{ form.lifestyle_recommendations.id_for_label }}" 
+                                      name="{{ form.lifestyle_recommendations.name }}" rows="2">{% if form.lifestyle_recommendations.value %}{{ form.lifestyle_recommendations.value }}{% endif %}</textarea>
+                        </div>
+                        {% if form.lifestyle_recommendations.help_text %}
+                            <small class="form-help">{{ form.lifestyle_recommendations.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.lifestyle_recommendations.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.referred_to_specialist.id_for_label }}">{{ form.referred_to_specialist.label }}</label>
+                        <div class="input-container">
+                            <input type="text" id="{{ form.referred_to_specialist.id_for_label }}" 
+                                   name="{{ form.referred_to_specialist.name }}" value="{{ form.referred_to_specialist.value|default:'' }}">
+                        </div>
+                        {% if form.referred_to_specialist.help_text %}
+                            <small class="form-help">{{ form.referred_to_specialist.help_text }}</small>
+                        {% endif %}
+                        {% for error in form.referred_to_specialist.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Doctor's Notes Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 class="section-title">Doctor's Notes</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label>Final Comments</label>
+                    <div class="input-container">
+                        <textarea id="{{ form.review_notes.id_for_label }}" 
+                                  name="{{ form.review_notes.name }}" rows="4">{% if form.review_notes.value %}{{ form.review_notes.value }}{% endif %}</textarea>
+                    </div>
+                    {% if form.review_notes.help_text %}
+                        <small class="form-help">{{ form.review_notes.help_text }}</small>
+                    {% endif %}
+                    {% for error in form.review_notes.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <a href="{% url 'view_patient' patient.id %}" class="back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Cancel
+                </a>
+                <button type="submit" class="save-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Submit Exam
+                </button>
+            </div>
+        </form>
     </div>
+</div>
+
+<style>
+    :root {
+        --primary: #8b5cf6;
+        --primary-light: rgba(139, 92, 246, 0.1);
+        --primary-dark: #7c3aed;
+        --accent: #ec4899;
+        --danger: #ef4444;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --secondary: #1e293b;
+        --bg-darker: #0f172a;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --transition: all 0.3s ease;
+        --section-border: rgba(139, 92, 246, 0.2);
+    }
+
+    /* Exam Container */
+    .exam-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Exam Header */
+    .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .exam-title {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .exam-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .exam-icon svg {
+        width: 28px;
+        height: 28px;
+        color: var(--primary);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .welcome-text h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .welcome-text p {
+        color: var(--text-secondary);
+        font-size: 0.9375rem;
+    }
+
+    /* Exam Card */
+    .exam-card {
+        background-color: var(--secondary);
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        padding: 2rem;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Form Sections */
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--section-border);
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .section-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--primary);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Form Groups */
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 0.9375rem;
+    }
+
+    .input-container {
+        position: relative;
+        width: 100%;
+    }
+
+    .input-container input,
+    .input-container select,
+    .input-container textarea {
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        background-color: var(--bg-darker);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .input-container textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.5;
+    }
+
+    .input-container input:focus,
+    .input-container select:focus,
+    .input-container textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+    }
+
+    .input-container select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
+    }
+
+    /* Form Help & Error Text */
+    .form-help {
+        color: var(--text-secondary);
+        font-size: 0.8125rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .error-message {
+        color: var(--danger);
+        font-size: 0.8125rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Special Sections */
+    .pregnancy-section {
+        background-color: rgba(245, 158, 11, 0.05);
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--warning);
+    }
+
+    .treatment-section {
+        background-color: rgba(239, 68, 68, 0.05);
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--danger);
+    }
+
+    .vitals-section {
+        background-color: rgba(16, 185, 129, 0.05);
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--success);
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    /* Buttons */
+    .back-btn {
+        background-color: var(--secondary);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        text-decoration: none;
+    }
+
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transform: translateY(-2px);
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .back-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .save-btn {
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0.875rem 1.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .save-btn:hover {
+        background: linear-gradient(to right, var(--primary-dark), #db2777);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    }
+
+    .save-btn svg {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.2s ease;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .save-btn:hover svg {
+        transform: translateX(3px);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Print-specific styles */
+    @media print {
+        body {
+            background-color: white !important;
+            color: #000 !important;
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            padding: 20px !important;
+        }
+        
+        /* Hide non-essential elements */
+        .no-print, .header-actions, .form-actions {
+            display: none !important;
+        }
+        
+        /* Darker text and better contrast */
+        .exam-container, .exam-card {
+            background-color: white !important;
+            color: #000 !important;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        
+        /* Headers and titles */
+        h2, .section-title, .form-label {
+            color: #111 !important;
+            font-weight: bold;
+        }
+        
+        /* Form inputs */
+        .input-container input,
+        .input-container select,
+        .input-container textarea {
+            background-color: white !important;
+            color: #000 !important;
+            border: 1px solid #ddd !important;
+            padding: 0.5rem !important;
+        }
+        
+        /* Special sections */
+        .pregnancy-section,
+        .treatment-section,
+        .vitals-section {
+            background-color: white !important;
+            border-left: 3px solid #333 !important;
+        }
+        
+        /* Print page margins */
+        @page {
+            size: auto;
+            margin: 15mm;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .exam-container {
+            padding: 1.5rem;
+        }
+
+        .exam-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .exam-card {
+            padding: 1.5rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .back-btn,
+        .save-btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .exam-container {
+            padding: 1rem;
+        }
+
+        .exam-title {
+            gap: 1rem;
+        }
+
+        .exam-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .input-container input,
+        .input-container select,
+        .input-container textarea {
+            padding: 0.75rem 1rem;
+        }
+    }
+</style>
+
 
     {% block extra_js %}
     <script>
@@ -667,12 +840,11 @@
           document.getElementById('menstrual_cycle_notes_group').style.display = (showPregnancyFields || showMenstrualFields) ? 'block' : 'none';
         }
 
-        togglePregnancyFields(); // Run initially
-        isPregnantSelect.addEventListener('change', togglePregnancyFields); // Update on change
+        togglePregnancyFields();
+        isPregnantSelect.addEventListener('change', togglePregnancyFields);
         }
       });
     </script>
     {% endblock %}
 </body>
-</html>
 {% endblock %}

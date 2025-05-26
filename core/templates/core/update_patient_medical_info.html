@@ -1,372 +1,530 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Medical Info for {{ patient.username }}</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Medical Data Form{% endblock %}
+{% block content %}
+<div class="update-container">
+    <!-- Glow effects from base template -->
+    <div class="glow glow-primary"></div>
+    <div class="glow glow-accent"></div>
+    
+    <div class="update-header">
+        <div class="update-title">
+            <div class="update-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+            </div>
+            <div class="welcome-text">
+                <h2>Update Medical Info</h2>
+                <p>For Patient: {{ patient.imanis_code }}</p>
+            </div>
+        </div>
         
-        :root {
-            --primary: #3b82f6;
-            --primary-light: rgba(59, 130, 246, 0.1);
-            --primary-dark: #2563eb;
-            --secondary: #1f2937;
-            --dark: #111827;
-            --light: #1f2937;
-            --text-primary: #f9fafb;
-            --text-secondary: #d1d5db;
-            --gray: #6b7280;
-            --gray-light: #374151;
-            --danger: #ef4444;
-            --success: #10b981;
-            --bg-dark: #111827;
-            --bg-darker: #0a0f1a;
-            --card-bg: #1f2937;
-            --card-border: rgba(255, 255, 255, 0.05);
-        }
-        
+        <div class="header-actions">
+            <a href="{% url 'view_patient' patient.id %}" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Patient
+            </a>
+        </div>
+    </div>
+
+    <!-- Patient Medical Data Form -->
+    <div class="update-card">
+        <form method="post" class="update-form">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                <div class="input-container">
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                        <div class="form-checkbox">
+                            {{ field }}
+                            <span>{{ field.label }}</span>
+                        </div>
+                    {% else %}
+                        <div class='inputarea'>{{ field }}</div>
+                    {% endif %}
+                </div>
+                {% if field.help_text %}
+                    <small class="form-help">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div class="form-actions">
+                <a href="{% url 'view_patient' patient.id %}" class="back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Cancel
+                </a>
+                <button type="submit" class="save-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary: #8b5cf6;
+        --primary-light: rgba(139, 92, 246, 0.1);
+        --primary-dark: #7c3aed;
+        --accent: #ec4899;
+        --danger: #ef4444;
+        --success: #10b981;
+        --secondary: #1e293b;
+        --bg-darker: #0f172a;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --transition: all 0.3s ease;
+    }
+
+    /* Update Container */
+    .update-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Update Header */
+    .update-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .update-title {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .update-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .update-icon svg {
+        width: 28px;
+        height: 28px;
+        color: var(--primary);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .welcome-text h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .welcome-text p {
+        color: var(--text-secondary);
+        font-size: 0.9375rem;
+    }
+
+    /* Update Card */
+    .update-card {
+        background-color: var(--secondary);
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        padding: 2rem;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Form Styles */
+    .update-form {
+        margin-top: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 0.9375rem;
+    }
+
+    .input-container {
+        width: 100%;
+    }
+
+    .update-form input,
+    .update-form select,
+    .update-form textarea {
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background-color: var(--bg-darker);
+        color: var(--text-primary);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .update-form textarea {
+        max-height: 90px;
+        resize: vertical;
+        line-height: 1.5;
+        padding: 1rem;
+    }
+
+    .update-form input:focus,
+    .update-form select:focus,
+    .update-form textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3),
+                    inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        background-color: rgba(15, 23, 42, 0.9);
+    }
+
+    /* Placeholder styling */
+    .update-form input::placeholder,
+    .update-form textarea::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+    }
+
+
+    /* Form Help Text */
+    .form-help {
+        color: var(--text-secondary);
+        font-size: 0.8125rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    /* Buttons */
+    .back-btn {
+        background-color: var(--secondary);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        text-decoration: none;
+    }
+
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transform: translateY(-2px);
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .back-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .save-btn {
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0.875rem 1.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .save-btn:hover {
+        background: linear-gradient(to right, var(--primary-dark), #db2777);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    }
+
+    .save-btn svg {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.2s ease;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .save-btn:hover svg {
+        transform: translateX(3px);
+    }
+
+    /* Error styling */
+    .errorlist {
+        list-style: none;
+        color: var(--danger);
+        font-size: 0.8125rem;
+        margin-top: 0.5rem;
+        padding-left: 0;
+    }
+
+    .errorlist li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .errorlist li::before {
+        content: '⚠';
+        font-size: 0.9em;
+    }
+
+    .field-error {
+        border-color: var(--danger) !important;
+    }
+
+    .field-error:focus {
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+    }
+
+    /* Checkbox styling */
+    .form-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+        cursor: pointer;
+    }
+
+    .form-checkbox input {
+        width: 20px;
+        height: 20px;
+        appearance: none;
+        -webkit-appearance: none;
+        background-color: var(--bg-darker);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+    }
+
+    .form-checkbox input:checked {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .form-checkbox input:checked::after {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 3px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    .form-checkbox span {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Print-specific styles */
+    @media print {
         body {
-            background-color: var(--bg-dark);
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
-            background-size: 50px 50px;
-            background-repeat: repeat;
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 2rem;
+            background-color: white !important;
+            color: #000 !important;
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            padding: 20px !important;
         }
         
+        /* Hide non-essential elements */
+        .no-print, .header-actions, .form-actions {
+            display: none !important;
+        }
+        
+        /* Darker text and better contrast */
+        .update-container, .update-card {
+            background-color: white !important;
+            color: #000 !important;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        
+        /* Headers and titles */
+        h2, .form-label {
+            color: #111 !important;
+            font-weight: bold;
+        }
+        
+        /* Form inputs */
+        .update-form input,
+        .update-form select,
+        .update-form textarea {
+            background-color: white !important;
+            color: #000 !important;
+            border: 1px solid #ddd !important;
+            padding: 0.5rem !important;
+        }
+        
+        /* Checkboxes */
+        .form-checkbox input {
+            background-color: white !important;
+            border: 1px solid #ddd !important;
+        }
+        
+        .form-checkbox input:checked {
+            background-color: #333 !important;
+        }
+        
+        /* Print page margins */
+        @page {
+            size: auto;
+            margin: 15mm;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
         .update-container {
-            max-width: 600px;
-            margin: 0 auto;
+            padding: 1.5rem;
         }
-        
+
         .update-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            flex-direction: column;
+            align-items: flex-start;
         }
-        
-        .header-actions {
-            display: flex;
-            gap: 1rem;
+
+        .update-card {
+            padding: 1.5rem;
         }
-        
-        .back-btn {
-            background-color: var(--gray-light);
-            color: var(--text-primary);
-            border: none;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-            text-decoration: none;
+
+        .form-actions {
+            flex-direction: column-reverse;
         }
-        
-        .back-btn:hover {
-            background-color: var(--gray);
-            transform: translateY(-2px);
+
+        .back-btn,
+        .save-btn {
+            width: 100%;
+            justify-content: center;
         }
-        
-        .back-btn svg {
-            width: 18px;
-            height: 18px;
+    }
+
+    @media (max-width: 480px) {
+        .update-container {
+            padding: 1rem;
         }
-        
+
         .update-title {
-            display: flex;
-            align-items: center;
             gap: 1rem;
         }
-        
+
         .update-icon {
             width: 48px;
             height: 48px;
-            background-color: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-        
-        .update-icon svg {
-            width: 24px;
-            height: 24px;
-            color: var(--primary);
-        }
-        
-        .update-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
-            border: 1px solid var(--card-border);
-        }
-        
-        .update-form {
-            margin-top: 1rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-label {
-            display: block;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            font-size: 0.9375rem;
-        }
-        
-        .input-container {
-            width: 100%;
         }
 
         .update-form input,
         .update-form select,
         .update-form textarea {
-            width: 100%;
-            padding: 0.875rem 1.25rem;
-            border: 1px solid rgba(55, 65, 81, 0.6);
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.25s ease;
-            background-color: rgba(10, 15, 26, 0.8);
-            color: var(--text-primary);
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem 1rem;
         }
+    }
+</style>
 
-        .update-form textarea {
-            min-height: 100px;
-            resize: vertical;
-            line-height: 1.0;
-            padding: 1.25rem;
-        }
+<script>
+    // Add error class to fields with errors
+    document.addEventListener('DOMContentLoaded', function() {
+        const errorFields = document.querySelectorAll('.errorlist');
+        errorFields.forEach(function(errorList) {
+            const inputId = errorList.previousElementSibling.querySelector('input, select, textarea')?.id;
+            if (inputId) {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.classList.add('field-error');
+                }
+            }
+        });
 
-        .update-form input:focus,
-        .update-form select:focus,
-        .update-form textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3),
-                        inset 0 1px 2px rgba(0, 0, 0, 0.1);
-            background-color: rgba(10, 15, 26, 0.9);
-        }
-
-        /* Placeholder styling */
-        .update-form input::placeholder,
-        .update-form textarea::placeholder {
-            color: var(--gray);
-            opacity: 0.7;
-        }
-        
-        .form-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-        }
-        
-        .save-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.875rem 1.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .save-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .save-btn svg {
-            width: 18px;
-            height: 18px;
-            transition: transform 0.2s ease;
-        }
-        
-        .save-btn:hover svg {
-            transform: translateX(3px);
-        }
-        
-        /* Error styling */
-        .errorlist {
-            list-style: none;
-            color: var(--danger);
-            font-size: 0.8125rem;
-            margin-top: 0.25rem;
-        }
-        
-        .field-error {
-            border-color: var(--danger) !important;
-        }
-        
-        /* Checkbox styling */
-        .form-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .form-checkbox input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .update-card {
-                padding: 1.5rem;
-            }
-            
-            .update-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .form-actions {
-                flex-direction: column-reverse;
-                gap: 1rem;
-            }
-            
-            .save-btn {
-                width: 100%;
-            }
-            
-            .back-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .update-card {
-            animation: fadeIn 0.6s ease-out;
-        }
-    </style>
-</head>
-<body>
-    <div class="update-container">
-        <div class="update-header">
-            <div class="update-title">
-                <div class="update-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                </div>
-                <h2>Update Medical Info for {{ patient.username }}</h2>
-            </div>
-            
-            <div class="header-actions">
-                <a href="{% url 'view_patient' patient.id %}" class="back-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to Patient
-                </a>
-            </div>
-        </div>
-        
-        <div class="update-card">
-            <form method="post" class="update-form">
-                {% csrf_token %}
-                
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    <div class="input-container">
-                        {% if field.field.widget.input_type == 'checkbox' %}
-                            <div class="form-checkbox">
-                                {{ field }}
-                                <span>{{ field.label }}</span>
-                            </div>
-                        {% else %}
-                            {{ field }}
-                        {% endif %}
-                    </div>
-                    {% if field.help_text %}
-                        <small class="form-help">{{ field.help_text }}</small>
-                    {% endif %}
-                    {% if field.errors %}
-                        <ul class="errorlist">
-                            {% for error in field.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-                {% endfor %}
-                
-                <div class="form-actions">
-                    <a href="{% url 'view_patient' patient.id %}" class="back-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Cancel
-                    </a>
-                    <button type="submit" class="save-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Save Changes
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Add error class to fields with errors
-        document.addEventListener('DOMContentLoaded', function() {
-            const errorFields = document.querySelectorAll('.errorlist');
-            errorFields.forEach(function(errorList) {
-                const inputId = errorList.previousElementSibling.querySelector('input, select, textarea')?.id;
+        // Add focus styles to inputs when labels are clicked (for better accessibility)
+        const labels = document.querySelectorAll('.form-label');
+        labels.forEach(label => {
+            label.addEventListener('click', () => {
+                const inputId = label.getAttribute('for');
                 if (inputId) {
                     const input = document.getElementById(inputId);
                     if (input) {
-                        input.classList.add('field-error');
+                        input.focus();
                     }
                 }
             });
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+{% endblock %}

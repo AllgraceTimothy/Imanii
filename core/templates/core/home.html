@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imanii - Secure Digital Health Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Imanii - Health Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
+            --primary: #8b5cf6;  /* Purple */
+            --primary-light: rgba(139, 92, 246, 0.1);
+            --primary-dark: #7c3aed;
+            --accent: #ec4899;   /* Pink */
             --secondary: #1f2937;
-            --accent: #3b82f6;
             --dark: #111827;
             --light: #1f2937;
             --success: #10b981;
@@ -20,6 +22,7 @@
             --text-secondary: #d1d5db;
             --bg-dark: #111827;
             --bg-darker: #0a0f1a;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         * {
@@ -33,6 +36,13 @@
             background-color: var(--bg-dark);
             color: var(--text-primary);
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
         .container {
@@ -43,12 +53,11 @@
         
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, var(--bg-darker), var(--dark));
             color: white;
             padding: 2rem 0;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, var(--bg-darker), var(--dark));
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
@@ -66,25 +75,40 @@
             width: 100%;
             height: 100%;
             opacity: 0.1;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIi8+PC9zdmc+');
+            background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
         }
         
         .logo {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             margin: 0 auto 2rem;
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 20px rgba(59, 130, 246, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
         }
         
         .logo:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
         }
         
         .logo svg {
@@ -95,9 +119,13 @@
         
         h1 {
             font-size: 3rem;
-            font-weight: 700;
             margin-bottom: 1.5rem;
             line-height: 1.2;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
         }
         
         .tagline {
@@ -118,25 +146,44 @@
         }
         
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             padding: 1rem 2rem;
             border-radius: 50px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s ease;
-            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
         }
         
         .btn-primary {
-            background-color: var(--primary);
+            background: linear-gradient(to right, var(--primary), var(--accent));
             color: white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
         }
         
         .btn-primary:hover {
-            background-color: var(--primary-dark);
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
         }
         
         .btn-secondary {
@@ -146,8 +193,9 @@
         }
         
         .btn-secondary:hover {
-            background-color: rgba(59, 130, 246, 0.1);
+            background-color: rgba(139, 92, 246, 0.1);
             transform: translateY(-3px);
+            border-color: var(--accent);
         }
         
         /* Features Section */
@@ -163,7 +211,8 @@
             position: absolute;
             inset: 0;
             opacity: 0.05;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
+            background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.1) 1px, transparent 0);
+            background-size: 40px 40px;
         }
         
         .section-title {
@@ -177,6 +226,11 @@
             font-size: 2.5rem;
             color: var(--text-primary);
             margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
         }
         
         .section-title p {
@@ -195,24 +249,26 @@
         
         .feature-card {
             background-color: var(--secondary);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2.5rem;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
         .feature-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
             border-color: var(--primary);
         }
         
         .feature-icon {
             width: 80px;
             height: 80px;
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -220,6 +276,7 @@
             margin: 0 auto 1.5rem;
             color: white;
             font-size: 2rem;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
         }
         
         .feature-card h3 {
@@ -245,23 +302,50 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 10px;
-            background: linear-gradient(to right, var(--primary), var(--success));
+            height: 6px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
         }
         
         .testimonial-card {
             background-color: var(--secondary);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin: 0 1rem;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+            max-width: 800px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .testimonial-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
         }
         
         .testimonial-content {
             font-style: italic;
             margin-bottom: 1.5rem;
             color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            position: relative;
+        }
+        
+        .testimonial-content::before {
+            content: '"';
+            font-size: 4rem;
+            position: absolute;
+            top: -1.5rem;
+            left: -2rem;
+            color: rgba(139, 92, 246, 0.2);
+            font-family: serif;
+            line-height: 1;
         }
         
         .testimonial-author {
@@ -270,17 +354,23 @@
         }
         
         .author-avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background-color: var(--light);
-            margin-right: 1rem;
-            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            margin-right: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
         }
         
         .author-info h4 {
             font-weight: 600;
             color: var(--text-primary);
+            margin-bottom: 0.25rem;
         }
         
         .author-info p {
@@ -294,19 +384,46 @@
             color: white;
             padding: 4rem 0 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
         }
         
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
+            gap: 3rem;
             margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
         }
         
         .footer-column h3 {
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
             color: white;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 3px;
         }
         
         .footer-column ul {
@@ -320,11 +437,29 @@
         .footer-column ul li a {
             color: var(--text-secondary);
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: var(--transition);
+            display: inline-block;
+            position: relative;
         }
         
         .footer-column ul li a:hover {
             color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .footer-column ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .footer-column ul li a:hover::after {
+            width: 100%;
         }
         
         .copyright {
@@ -333,6 +468,28 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-secondary);
             font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Glow effects */
+        .glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .glow-primary {
+            background: var(--primary);
+        }
+        
+        .glow-accent {
+            background: var(--accent);
         }
         
         /* Animations */
@@ -342,7 +499,17 @@
         }
         
         .animate-fadeIn {
-            animation: fadeIn 1s ease-out;
+            animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
         }
         
         /* Responsive */
@@ -364,28 +531,79 @@
                 width: 100%;
                 max-width: 300px;
             }
-
+            
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .logo svg {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .feature-card {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .header-content {
+                padding: 3rem 0;
+            }
+            
+            .testimonial-card {
+                padding: 1.5rem;
+            }
+            
+            .testimonial-content::before {
+                left: -1rem;
+                top: -1rem;
+                font-size: 3rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Glow effects -->
+    <div class="glow glow-primary" style="top: 10%; left: 10%;"></div>
+    <div class="glow glow-accent" style="bottom: 20%; right: 10%;"></div>
+    
     <!-- Header/Hero Section -->
     <header>
         <div class="header-bg"></div>
         <div class="container header-content animate-fadeIn">
-            <div class="logo">
+            <div class="logo animate-float">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
             </div>
             <h1>Imanii: Your Secure Digital Health Hub</h1>
-            <p class="tagline">Your trusted platform for streamlined patient record management. Designed with both patient privacy and medical efficiency in mind, CareVault offers secure digital storage and easy access to vital health information.</p>
+            <p class="tagline">Your trusted platform for streamlined patient record management. Designed with both patient privacy and medical efficiency in mind, Imanii offers secure digital storage and easy access to vital health information.</p>
             <div class="cta-buttons">
-                <a href="{% url 'register_patient' %}" class="btn btn-primary">Register as Patient</a>
-                <a href="{% url 'register_medic' %}" class="btn btn-secondary">Register as Medic</a>
+                <a href="{% url 'register_patient' %}" class="btn btn-primary">
+                    Register as Patient
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+                <a href="{% url 'register_medic' %}" class="btn btn-secondary">
+                    Register as Medic </br>
+                    <i class="fas fa-user-md ml-2"></i>
+                </a>
             </div>
             <div style="margin-top: 2rem;">
-                <a href="{% url 'login' %}" style="color: var(--primary); text-decoration: none;">Already have an account? Login here</a>
+                <a href="{% url 'login' %}" style="color: var(--primary); text-decoration: none; transition: var(--transition);" 
+                   onmouseover="this.style.color='var(--accent)'; this.style.textDecoration='underline'" 
+                   onmouseout="this.style.color='var(--primary)'; this.style.textDecoration='none'">
+                    Already have an account? Login here
+                </a>
             </div>
         </div>
     </header>
@@ -401,19 +619,15 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
+                        <i class="fas fa-shield-alt"></i>
                     </div>
-                    <h3>Military-Grade Security</h3>
+                    <h3>Industry-leading security</h3>
                     <p>Your health data is encrypted with industry-leading protocols to ensure complete privacy and protection against unauthorized access.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
+                        <i class="fas fa-file-medical-alt"></i>
                     </div>
                     <h3>Comprehensive Records</h3>
                     <p>Store and manage all your health information in one place - from medical history to current medications and test results.</p>
@@ -421,9 +635,7 @@
                 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
+                        <i class="fas fa-share-alt"></i>
                     </div>
                     <h3>Seamless Sharing</h3>
                     <p>Securely share your records with healthcare providers when needed, with full control over what information is accessible.</p>
@@ -437,16 +649,16 @@
         <div class="container">
             <div class="section-title">
                 <h2>Trusted by Patients and Professionals</h2>
-                <p>Hear what our users say about their experience with CareVault</p>
+                <p>Hear what our users say about their experience with Imanii</p>
             </div>
             
             <div class="testimonial-card">
-                <p class="testimonial-content">"As a physician, CareVault has transformed how I access and update patient records. The intuitive interface saves me hours each week, allowing me to focus more on patient care."</p>
+                <p class="testimonial-content">As a physician, Imanii has transformed how I access and update patient records. The intuitive interface saves me hours each week, allowing me to focus more on patient care. The security features give me peace of mind knowing my patients' data is protected.</p>
                 <div class="testimonial-author">
-                    <div class="author-avatar"></div>
+                    <div class="author-avatar">SJ</div>
                     <div class="author-info">
                         <h4>Dr. Sarah Johnson</h4>
-                        <p>Cardiologist, City Medical Center</p>
+                        <p>Cardiologist, Kenyatta National Hospital</p>
                     </div>
                 </div>
             </div>
@@ -458,8 +670,25 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <h3>CareVault</h3>
+                    <h3>Imanii</h3>
                     <p style="color: var(--text-secondary); margin-bottom: 1rem;">Your secure digital health hub for modern healthcare management.</p>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <a href="#" style="color: var(--text-secondary); transition: var(--transition);" 
+                           onmouseover="this.style.color='var(--primary)'" 
+                           onmouseout="this.style.color='var(--text-secondary)'">
+                            <i class="fab fa-twitter fa-lg"></i>
+                        </a>
+                        <a href="#" style="color: var(--text-secondary); transition: var(--transition);" 
+                           onmouseover="this.style.color='var(--primary)'" 
+                           onmouseout="this.style.color='var(--text-secondary)'">
+                            <i class="fab fa-linkedin fa-lg"></i>
+                        </a>
+                        <a href="#" style="color: var(--text-secondary); transition: var(--transition);" 
+                           onmouseover="this.style.color='var(--primary)'" 
+                           onmouseout="this.style.color='var(--text-secondary)'">
+                            <i class="fab fa-facebook fa-lg"></i>
+                        </a>
+                    </div>
                 </div>
                 
                 <div class="footer-column">
@@ -468,6 +697,7 @@
                         <li><a href="{% url 'register_patient' %}">Patient Registration</a></li>
                         <li><a href="{% url 'register_medic' %}">Medic Registration</a></li>
                         <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="#">About Us</a></li>
                     </ul>
                 </div>
                 
@@ -477,14 +707,17 @@
                         <li><a href="#">Privacy Policy</a></li>
                         <li><a href="#">Terms of Service</a></li>
                         <li><a href="#">Security</a></li>
+                        <li><a href="#">FAQ</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-column">
                     <h3>Contact</h3>
                     <ul>
-                        <li><a href="mailto:support@carevault.com">support@carevault.com</a></li>
-                        <li><a href="tel:+18005551234">1-800-555-1234</a></li>
+                        <li><a href="mailto:support@imanii.com">support@imanii.com</a></li>
+                        <li><a href="tel:+254711258811">+254 711 258811</a></li>
+                        <li><a href="tel:+254791480312">+254 791 480312</a></li>
+                        <li>Nairobi, Kenya</li>
                     </ul>
                 </div>
             </div>
@@ -494,5 +727,33 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Add floating animation to feature cards on hover
+        document.addEventListener('DOMContentLoaded', function() {
+            const featureCards = document.querySelectorAll('.feature-card');
+            
+            featureCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transition = 'none';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transition = 'transform 0.5s ease';
+                    card.style.transform = 'rotateY(0deg) rotateX(0deg) translateY(-10px)';
+                });
+            });
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>

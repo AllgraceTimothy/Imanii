@@ -10,10 +10,19 @@ from django.forms import widgets as form_widgets
 
 class PatientRegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['first_name', 'last_name', 'email', 'password']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm = cleaned_data.get("confirm_password")
+
+        if password != confirm:
+            self.add_error('confirm_password', "Passwords do not match")
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -25,11 +34,20 @@ class PatientRegisterForm(forms.ModelForm):
 
 class MedicRegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
-    secret_code = forms.CharField(help_text="Enter the secret code provided by the administrator.")
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    secret_code = forms.CharField(widget=forms.PasswordInput, help_text="Enter the secret code provided by the administrator.")
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['first_name', 'last_name', 'email', 'password']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm = cleaned_data.get("confirm_password")
+
+        if password != confirm:
+            self.add_error('confirm_password', "Passwords do not match")
 
     def clean_secret_code(self):
         code = self.cleaned_data.get('secret_code')
@@ -45,24 +63,27 @@ class MedicRegisterForm(forms.ModelForm):
             user.save()
         return user
 
-class LoginForm(AuthenticationForm):
-    username = forms.CharField()
+class LoginForm(forms.Form):
+    email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
 
 class PatientProfileForm(forms.ModelForm):
     date_of_birth = forms.DateField(
-        input_formats=['%d/%m/%Y'],
-        widget=forms.DateInput(format='%d/%m/%Y', attrs={
-            'placeholder': 'DD/MM/YYYY',
-        })
+        widget=forms.DateInput(
+            attrs={'type': 'date', 'class': 'form-control', 'placeholder': 'Select a date'}
+        )
     )
+
     class Meta:
         model = PatientProfile
         fields = [
-            'full_name', 'date_of_birth', 'gender', 'marital_status',
-            'phone_number', 'contact_email', 
-            'next_of_kin_name', 'next_of_kin_phone', 'next_of_kin_email'
+            'date_of_birth', 'gender', 'marital_status',
+            'phone_number', 'contact_email',
+            'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_email'
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 class MedicalInfoForm(forms.ModelForm):
     class Meta:
@@ -113,4 +134,3 @@ class MedicalForm(forms.ModelForm):
             'procedure': forms.Select(attrs={'class': 'form-control'}),
             'procedure_result': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
         }
-

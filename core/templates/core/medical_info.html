@@ -1,298 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Information</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        
-        :root {
-            --primary: #3b82f6;
-            --primary-light: rgba(59, 130, 246, 0.1);
-            --primary-dark: #2563eb;
-            --secondary: #1f2937;
-            --dark: #111827;
-            --light: #1f2937;
-            --text-primary: #f9fafb;
-            --text-secondary: #d1d5db;
-            --gray: #6b7280;
-            --gray-light: #374151;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --bg-dark: #111827;
-            --bg-darker: #0a0f1a;
-            --card-bg: #1f2937;
-            --card-border: rgba(255, 255, 255, 0.05);
-            --section-border: rgba(59, 130, 246, 0.2);
-        }
-        
-        body {
-            background-color: var(--bg-dark);
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMCAwaDQwdDQwdjQwSDB6Ii8+PC9zdmc+');
-            background-size: 50px 50px;
-            background-repeat: repeat;
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 2rem;
-        }
-        
-        .medical-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .medical-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .btn {
-            padding: 0.5rem 1.25rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            border-radius: 10px;
-            border: none;
-            letter-spacing: 0.025em;
-        }
-        
-        .back-btn {
-            background-color: var(--gray-light);
-            color: var(--text-primary);
-        }
-        
-        .back-btn:hover {
-            background-color: var(--gray);
-            transform: translateY(-2px);
-        }
-        
-        .primary-btn {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .primary-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .warning-btn {
-            background-color: var(--warning);
-            color: white;
-        }
-        
-        .warning-btn:hover {
-            background-color: #e69009;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-        }
-        
-        .btn svg {
-            width: 18px;
-            height: 18px;
-        }
-        
-        .medical-title {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .medical-icon {
-            width: 48px;
-            height: 48px;
-            background-color: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-        
-        .medical-icon svg {
-            width: 24px;
-            height: 24px;
-            color: var(--primary);
-        }
-        
-        .medical-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
-            border: 1px solid var(--card-border);
-            margin-bottom: 2rem;
-        }
-        
-        .section {
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--section-border);
-        }
-        
-        .section:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.25rem;
-        }
-        
-        .section-title svg {
-            width: 20px;
-            height: 20px;
-            color: var(--primary);
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .info-item {
-            background-color: var(--bg-darker);
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--primary);
-        }
-        
-        .info-label {
-            font-size: 0.8125rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-        }
-        
-        .info-value {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-            background-color: var(--bg-darker);
-            border-radius: 8px;
-        }
-        
-        .empty-state svg {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 1rem;
-            color: var(--gray);
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .medical-card {
-                padding: 1.5rem;
-            }
-            
-            .medical-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .medical-card {
-            animation: fadeIn 0.6s ease-out;
-        }
-    </style>
-</head>
-<body>
-    <div class="medical-container">
-        <div class="medical-header">
-            <div class="medical-title">
-                <div class="medical-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                    </svg>
-                </div>
-                <h2>Medical Information</h2>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Medical Information{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    <!-- Glow effects -->
+    <div class="glow glow-primary"></div>
+    <div class="glow glow-accent"></div>
+    
+    <div class="dashboard-header">
+        <div class="medical-title">
+            <div class="medical-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
             </div>
-            
-            <div class="header-actions">
-                <a href="{% url 'patient_dashboard' %}" class="btn back-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to Dashboard
-                </a>
+            <div class="welcome-text">
+                <h2>My Medical Information</h2>
+                <p>Patient Code: {{ request.user.imanis_code }}</p>
             </div>
         </div>
         
+        <div class="header-actions">
+            <a href="{% url 'patient_dashboard' %}" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Floating print button -->
+    <button onclick="window.print()" class="print-button no-print" title="Print this exam">
+        🖨️
+    </button>
+
+    <!-- Medical Info Section -->
+    <div class="dashboard-content">
         <div class="medical-card">
             <div class="section">
                 <div class="section-header">
                     <h3 class="section-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                         </svg>
                         Medical Details
                     </h3>
@@ -313,18 +63,465 @@
                             </div>
                         {% endif %}
                     </div>
-
                 {% else %}
                     <div class="empty-state">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <p>No medical information available</p>
-
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<style>
+    :root {
+        --primary: #8b5cf6;
+        --primary-light: rgba(139, 92, 246, 0.1);
+        --primary-dark: #7c3aed;
+        --accent: #ec4899;
+        --danger: #ef4444;
+        --secondary: #1e293b;
+        --bg-darker: #0f172a;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --transition: all 0.3s ease;
+        --section-border: rgba(139, 92, 246, 0.2);
+    }
+    
+    /* Glow effects */
+    .glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+        z-index: 1;
+    }
+    
+    .glow-primary {
+        background: var(--primary);
+        top: 20%;
+        left: 10%;
+    }
+    
+    .glow-accent {
+        background: var(--accent);
+        bottom: 30%;
+        right: 15%;
+    }
+
+    /* Dashboard Container */
+    .dashboard-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Header */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .medical-title {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .medical-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .medical-icon svg {
+        width: 28px;
+        height: 28px;
+        color: var(--primary);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .welcome-text h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .welcome-text p {
+        color: var(--text-secondary);
+        font-size: 0.9375rem;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .back-btn {
+        background-color: var(--secondary);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        text-decoration: none;
+    }
+
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transform: translateY(-2px);
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .back-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Medical Card */
+    .medical-card {
+        background-color: var(--secondary);
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        animation: fadeIn 0.6s ease-out;
+        min-height: 900px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Sections */
+    .section {
+        margin-bottom: 2rem;
+        padding: 0 2rem 2rem;
+        border-bottom: 1px solid var(--section-border);
+    }
+
+    .section:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-top: 2rem;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.25rem;
+    }
+
+    .section-title svg {
+        width: 20px;
+        height: 20px;
+        color: var(--primary);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        background-color: var(--bg-darker);
+        padding: 1.25rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--primary);
+        transition: var(--transition);
+    }
+
+    .info-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .info-label {
+        font-size: 0.8125rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+        background-color: var(--bg-darker);
+        border-radius: 10px;
+        border: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .empty-state svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        opacity: 0.5;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Print Button */
+    .print-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+
+    .print-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Print-specific styles */
+    @media print {
+        body {
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .dashboard-container {
+            padding: 0;
+            max-width: 100%;
+        }
+
+        /* Retain card styling but make it print-friendly */
+        .medical-card {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+            background: white !important;
+            min-height: auto !important;
+        }
+
+        /* Darken and improve contrast while keeping colors */
+        .info-item {
+            background: rgba(30, 41, 59, 0.05) !important; /* Lightened version of --secondary */
+            border-left: 4px solid var(--primary) !important;
+            color: #111 !important;
+            page-break-inside: avoid;
+            print-color-adjust: exact;
+        }
+
+        .info-label {
+            color: var(--primary-dark) !important;
+            font-weight: bold;
+        }
+
+        .info-value {
+            color: #222 !important;
+        }
+
+        .section {
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3) !important; /* Lightened primary color */
+            page-break-inside: avoid;
+        }
+
+        /* Keep colored titles but darken for print */
+        .section-title {
+            color: var(--primary-dark) !important;
+        }
+
+        .section-title svg {
+            color: var(--primary-dark) !important;
+        }
+
+        /* Hide decorative elements */
+        .glow,
+        .back-btn,
+        .header-actions {
+            display: none !important;
+        }
+
+        /* Adjust medical icon for print */
+        .medical-icon {
+            background: white !important;
+            box-shadow: none !important;
+            border: 1px solid rgba(139, 92, 246, 0.3) !important;
+        }
+
+        .medical-icon svg {
+            color: var(--primary-dark) !important;
+        }
+
+        /* Keep gradient title but make it solid for print */
+        .welcome-text h2 {
+            background: none !important;
+            color: var(--primary-dark) !important;
+            -webkit-text-fill-color: var(--primary-dark) !important;
+        }
+
+        .welcome-text p {
+            color: #555 !important;
+        }
+
+        /* Ensure good spacing for print */
+        .section-header {
+            margin-bottom: 1rem;
+            padding-top: 1rem;
+        }
+
+        /* Improve grid layout for printing */
+        .info-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Force full width for print and ensure colors print */
+        @page {
+            size: auto;
+            margin: 10mm;
+        }
+
+        /* Darken interactive elements that appear in print */
+        a {
+            color: var(--primary-dark) !important;
+            text-decoration: underline !important;
+        }
+
+        /* Ensure contrast for empty state */
+        .empty-state {
+            background: rgba(30, 41, 59, 0.05) !important;
+            border: 1px dashed rgba(139, 92, 246, 0.3) !important;
+            color: #555 !important;
+        }
+
+        .empty-state svg {
+            color: var(--primary-dark) !important;
+            opacity: 0.8 !important;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1.5rem;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .back-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .section {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .section-header {
+            padding-top: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+
+        .medical-title {
+            gap: 1rem;
+        }
+
+        .medical-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .section {
+            padding: 0 1rem 1rem;
+        }
+    }
+</style>
+{% endblock %}

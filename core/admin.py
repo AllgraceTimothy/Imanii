@@ -5,14 +5,14 @@ from .models import User, PatientProfile, MedicalInfo, MedicalExam
 
 class UserAdmin(BaseUserAdmin):
     model = User
-    list_display = ('username', 'email', 'role', 'is_staff', 'is_active', 'date_joined')
+    list_display = ('email', 'first_name', 'last_name', 'imanis_code', 'role', 'is_staff', 'is_active', 'date_joined')
     list_filter = ('role', 'is_staff', 'is_active')
-    search_fields = ('username', 'email', 'imanis_code')
-    ordering = ('date_joined',)
+    search_fields = ('email', 'first_name', 'last_name', 'imanis_code')
+    ordering = ('-date_joined',)
 
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
-        (_('Personal Info'), {'fields': ('role', 'imanis_code')}),
+        (None, {'fields': ('email', 'password')}),
+        (_('Personal Info'), {'fields': ('first_name', 'last_name', 'role', 'imanis_code')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (_('Important Dates'), {'fields': ('last_login', 'date_joined')}),
     )
@@ -20,16 +20,19 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'role', 'imanis_code', 'password1', 'password2'),
+            'fields': ('email', 'first_name', 'last_name', 'role', 'password1', 'password2'),
         }),
     )
 
+    readonly_fields = ('imanis_code', 'date_joined', 'last_login')
+
+admin.site.register(User, UserAdmin)
 
 @admin.register(PatientProfile)
 class PatientProfileAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'user', 'date_of_birth', 'gender', 'get_age')
-    search_fields = ('full_name', 'user__username', 'contact_email')
-    list_filter = ('gender',)
+    list_display = ('user', 'date_of_birth', 'gender', 'get_age', 'contact_email', 'phone_number')
+    search_fields = ('full_name', 'user__email', 'contact_email')
+    list_filter = ('gender', 'marital_status')
 
     def get_age(self, obj):
         return obj.age
@@ -38,15 +41,19 @@ class PatientProfileAdmin(admin.ModelAdmin):
 
 @admin.register(MedicalInfo)
 class MedicalInfoAdmin(admin.ModelAdmin):
-    list_display = ('user', 'chronic_conditions', 'blood_group', 'rh_factor')
-    search_fields = ('user__username',)
+    list_display = ('medic', 'patient', 'blood_group', 'rh_factor', 'height_cm', 'weight_kg', 'bmi_display')
+    search_fields = ('user__email',)
     list_filter = ('blood_group', 'rh_factor')
+
+    def bmi_display(self, obj):
+        return obj.bmi
+    bmi_display.short_description = 'BMI'
 
 
 @admin.register(MedicalExam)
-class TreatmentAdmin(admin.ModelAdmin):
-    list_display = ('medic', 'patient', 'date', 'diagnosis')
-    search_fields = ('medic__username', 'patient__username', 'diagnosis')
-    list_filter = ('date', 'medic', 'is_pregnant')
+class MedicalExamAdmin(admin.ModelAdmin):
+    list_display = ('medic', 'patient', 'date', 'diagnosis', 'lab_test', 'procedure', 'is_pregnant')
+    search_fields = ('medic__email', 'patient__email', 'diagnosis', 'lab_test', 'procedure')
+    list_filter = ('date', 'medic', 'lab_test', 'procedure', 'is_pregnant')
 
-admin.site.register(User, UserAdmin)
+    readonly_fields = ('date',)

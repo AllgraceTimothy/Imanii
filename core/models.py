@@ -8,38 +8,46 @@ from django.conf import settings
 from datetime import date
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, password=None, role=None, secret_code=None):
+    def create_user(self, email, password=None, role=None, first_name=None, last_name=None, secret_code=None):
         if not email:
             raise ValueError('Users must have an email address')
-        if not username:
-            raise ValueError('Users must have a username')
         if not role:
             raise ValueError('Users must have a role')
 
+        if role == 'medic' and secret_code != settings.MEDIC_SECRET_CODE:
+            raise ValueError('Invalid secret code for medic registration')
 
-        if role == 'medic':
-            if secret_code != settings.MEDIC_SECRET_CODE:
-                raise ValueError('Invalid secret code for medic registration')
-        
         email = self.normalize_email(email)
-        user = self.model(username=username, email=email, role=role)
+        user = self.model(
+            email=email,
+            role=role,
+            first_name=first_name,
+            last_name=last_name
+        )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password):
-        user = self.create_user(username, email, password, role='admin')
+    def create_superuser(self, email, password, first_name='Admin', last_name='User'):
+        user = self.create_user(
+            email=email,
+            password=password,
+            role='admin',
+            first_name=first_name,
+            last_name=last_name
+        )
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
 
-
+# Custom User Model
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=150, unique=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
-    imanis_code =models.CharField(max_length=10, unique=True, blank=True, null=True)
+    imanis_code = models.CharField(max_length=10, unique=True, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -47,38 +55,37 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def save(self, *args, **kwargs):
         if not self.imanis_code and self.role in ['patient', 'medic']:
-            prefix = 'P-' if self.role == 'patient' else 'C-'
-            while True:
-                num = random.randint(0, 9999) if self.role == 'patient' else random.randint(0, 999)
-                code = f"{prefix}{num:04}" if self.role == 'patient' else f"{prefix}{num:03}"
-                if not User.objects.filter(imanis_code=code).exists():
-                    self.imanis_code = code
-                    break
+            first_initial = self.first_name[:1].upper()
+            last_initial = self.last_name[:1].upper()
+            base_code = f"{first_initial}{last_initial}-{random.randint(1000, 9999)}"
+            code = f"M{base_code}" if self.role == 'medic' else base_code
+
+            while User.objects.filter(imanis_code=code).exists():
+                base_code = f"{first_initial}{last_initial}-{random.randint(1000, 9999)}"
+                code = f"M{base_code}" if self.role == 'medic' else base_code
+
+            self.imanis_code = code
+
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.username} ({self.role})"
-
-
+        return f"{self.first_name} {self.last_name} ({self.role})"
+    
 class PatientProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES)
     marital_status = models.CharField(max_length=20, choices=MARITAL_STATUSES)
     phone_number = models.CharField(max_length=15)
     contact_email = models.EmailField()
-    next_of_kin_name = models.CharField(max_length=100)
-    next_of_kin_phone = models.CharField(max_length=15)
-    next_of_kin_email = models.EmailField()
-
-    def __str__(self):
-        return f"{self.full_name} ({self.user.username})"
+    emergency_contact_name = models.CharField(max_length=100)
+    emergency_contact_phone = models.CharField(max_length=15)
+    emergency_contact_email = models.EmailField()
 
     @property
     def age(self):
@@ -90,7 +97,8 @@ class PatientProfile(models.Model):
         return None
 
 class MedicalInfo(models.Model):
-    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='medical_forms')
+    medic = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patients_seen')
 
     height_cm = models.FloatField(
         blank=True, null=True,
@@ -125,10 +133,10 @@ class MedicalInfo(models.Model):
         help_text="Describe past surgeries (type, date, outcome)"
     )
     current_medications = models.TextField(blank=True)
-
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Medical Info for {self.user.username}"
+        return f"Medical Record for {self.patient.imanis_code} by {self.medic.imanis_code}"
 
     @property
     def bmi(self):
@@ -173,4 +181,4 @@ class MedicalExam(models.Model):
     review_notes = models.TextField(help_text="General review or summary of visit & any other comments", blank=True)
 
     def __str__(self):
-        return f"Treatment by {self.medic.username} for {self.patient.username} on {self.date}"
+        return f"Treatment by {self.medic.last_name} for {self.patient.first_name} on {self.date}"
