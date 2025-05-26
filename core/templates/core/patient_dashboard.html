@@ -3,10 +3,6 @@
 {% block title %}Patient Dashboard{% endblock %}
 {% block content %}
 <div class="dashboard-container">
-    <!-- Glow effects -->
-    <div class="glow glow-primary"></div>
-    <div class="glow glow-accent"></div>
-    
     <div class="dashboard-header">
         <div class="welcome-section">
             <div class="welcome-icon">
@@ -210,6 +206,7 @@
         background-color: var(--bg-darker);
         color: var(--danger);
         border: 1px solid var(--danger);
+        opacity: 1;
     }
 
     .logout-btn:hover {
@@ -217,6 +214,7 @@
         color: white;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        opacity: 1; /* Maintain opacity on hover */
     }
 
     .logout-btn svg {
