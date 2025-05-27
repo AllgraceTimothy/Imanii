@@ -182,3 +182,4 @@ class MedicalExam(models.Model):
 
     def __str__(self):
         return f"Treatment by {self.medic.last_name} for {self.patient.first_name} on {self.date}"
+
